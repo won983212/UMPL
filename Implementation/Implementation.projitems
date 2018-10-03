@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>6e7dc91e-0d87-4eec-870f-9b29ed76aa68</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>ExprCore</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ConstantFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exceptions\ExprCoreException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ExpressionParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MathHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Operators\BinaryOperatorDef.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Operators\OperatorDef.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Operators\OperatorRegistry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Operators\UnaryOperatorDef.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\Constant.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\Expression.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\Number.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\Operator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\TokenType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\Variable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TypeTree.cs" />
+  </ItemGroup>
+</Project>

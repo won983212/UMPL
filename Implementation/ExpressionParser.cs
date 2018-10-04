@@ -8,9 +8,54 @@ namespace ExprCore
 {
     class ExpressionParser
     {
-        public static void ParseExpression(TypeTree exprTree, string expr)
+        public static List<TokenType> ConvertToPostfix(string expr)
         {
             List<TokenType> tokens = Tokenize(expr);
+            List<TokenType> postfix = new List<TokenType>();
+            Stack<Operator> opstack = new Stack<Operator>();
+
+            foreach (TokenType t in tokens)
+            {
+                Operator oper = t as Operator;
+                if (oper != null)
+                {
+                    if (oper.op == '(')
+                    {
+                        opstack.Push(oper);
+                    }
+                    else if (oper.op == ')')
+                    {
+                        while (opstack.Count > 0)
+                        {
+                            Operator poped = opstack.Pop();
+                            if (poped.op == '(')
+                                break;
+                            else postfix.Add(poped);
+                        }
+                    }
+                    else
+                    {
+                        while (opstack.Count > 0)
+                        {
+                            if (opstack.Peek().priority <= oper.priority)
+                            {
+                                postfix.Add(opstack.Pop());
+                            }
+                            else break;
+                        }
+                        opstack.Push(oper);
+                    }
+                }
+                else
+                {
+                    postfix.Add(t);
+                }
+            }
+
+            while (opstack.Count > 0)
+                postfix.Add(opstack.Pop());
+
+            return postfix;
         }
 
         private static void AppendParsedToken(List<TokenType> tokens, bool? isDigitStart, StringBuilder buffer)

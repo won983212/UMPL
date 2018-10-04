@@ -6,11 +6,15 @@ namespace ExprCore.Types
 {
     class Operator : TokenType
     {
-        char op;
-
+        private static readonly string Operators = "+-*/%^=@!()";
+        private static readonly int[] OperatorPriority = new int[] { 2, 2, 1, 1, 3, 0, 4, 1, 0, 5, 0 };
+        public readonly char op;
+        public readonly int priority;
+    
         public Operator(char op)
         {
             this.op = op;
+            priority = GetOperatorPriority(op);
         }
 
         public override bool Equals(object obj)
@@ -31,7 +35,15 @@ namespace ExprCore.Types
 
         public static bool IsOperatorCharacter(char c)
         {
-            return "+-*/%^=@!()".IndexOf(c) >= 0;
+            return Operators.IndexOf(c) >= 0;
+        }
+
+        public static int GetOperatorPriority(char c)
+        {
+            int i = Operators.IndexOf(c);
+            if(i > 0)
+                return OperatorPriority[i];
+            return -1;
         }
     }
 }

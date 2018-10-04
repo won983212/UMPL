@@ -9,8 +9,8 @@ namespace ExprCore.Types
     class Number : TokenType
     {
         const double ERROR = 0.0000001;
-        long numerator;
-        long denomiator;
+        public long numerator;
+        public long denomiator;
 
         public Number(long number) : this(number, 1) { }
 

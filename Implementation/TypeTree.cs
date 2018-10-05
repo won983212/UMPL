@@ -22,5 +22,10 @@ namespace ExprCore
     class TypeTree
     {
         public Node rootNode;
+
+        public TypeTree(Node root)
+        {
+            this.rootNode = root;
+        }
     }
 }

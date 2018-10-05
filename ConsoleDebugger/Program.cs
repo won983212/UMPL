@@ -15,7 +15,8 @@ namespace ConsoleDebugger
         {
             try
             {
-                foreach (TokenType t in ExpressionParser.ConvertToPostfix("7-(a2+pi*(2-x)/7)*y-2+4/2"))
+                // 7 a2 pi 2 x - * 7 / + y * - 4 2 / 2 - +
+                foreach (TokenType t in ExpressionParser.ConvertToPostfix("7-(7+4*(2-3)/7)*8-2+4/2"))
                 {
                     Console.WriteLine(t);
                 }

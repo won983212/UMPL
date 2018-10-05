@@ -7,7 +7,7 @@ namespace ExprCore.Types
     class Operator : TokenType
     {
         private static readonly string Operators = "+-*/%^=@!()";
-        private static readonly int[] OperatorPriority = new int[] { 2, 2, 1, 1, 3, 0, 4, 1, 0, 5, 0 };
+        private static readonly int[] OperatorPriority = new int[] { 3, 3, 4, 4, 2, 5, 1, 4, 5, 0, 0 };
         public readonly char op;
         public readonly int priority;
     
@@ -41,7 +41,7 @@ namespace ExprCore.Types
         public static int GetOperatorPriority(char c)
         {
             int i = Operators.IndexOf(c);
-            if(i > 0)
+            if(i >= 0)
                 return OperatorPriority[i];
             return -1;
         }

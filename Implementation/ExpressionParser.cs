@@ -8,6 +8,29 @@ namespace ExprCore
 {
     class ExpressionParser
     {
+        public static TypeTree ParseAsTree(string expr)
+        {
+            List<TokenType> postfix_expr = ConvertToPostfix(expr);
+            Stack<TokenType> stack = new Stack<TokenType>();
+            Node root;
+            
+            foreach (TokenType t in postfix_expr)
+            {
+                if(t is Operator)
+                {
+                    if (stack.Count <= 2)
+                        throw new ExprCoreException("식이 잘못되었습니다.");
+
+                    TokenType t2 = stack.Pop();
+                    TokenType t1 = stack.Pop();
+                }
+                else
+                {
+                    stack.Push(t);
+                }
+            }
+        }
+
         public static List<TokenType> ConvertToPostfix(string expr)
         {
             List<TokenType> tokens = Tokenize(expr);
@@ -37,7 +60,7 @@ namespace ExprCore
                     {
                         while (opstack.Count > 0)
                         {
-                            if (opstack.Peek().priority <= oper.priority)
+                            if (opstack.Peek().priority >= oper.priority)
                             {
                                 postfix.Add(opstack.Pop());
                             }

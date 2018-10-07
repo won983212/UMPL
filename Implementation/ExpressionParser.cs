@@ -8,36 +8,52 @@ namespace ExprCore
 {
     class ExpressionParser
     {
-        public static TypeTree ParseAsTree(string expr)
+        public static Expression ParseExpression(string expr)
         {
-            List<TokenType> postfix_expr = ConvertToPostfix(expr);
-            Stack<TokenType> stack = new Stack<TokenType>();
-            Node root;
-            
+            if (expr.Length == 0)
+                throw new ExprCoreException("식이 비어있습니다.");
+
+            return ParseExpression(Tokenize(expr));
+        }
+
+        private static Expression ParseExpression(List<TokenType> tokenizedTokens)
+        {
+            List<TokenType> postfix_expr = ConvertToPostfix(tokenizedTokens);
+            Stack<Node> stack = new Stack<Node>();
+            bool isConst = true;
+
             foreach (TokenType t in postfix_expr)
             {
-                if(t is Operator)
+                if (t is Operator)
                 {
-                    if (stack.Count <= 2)
+                    if (stack.Count < 2)
                         throw new ExprCoreException("식이 잘못되었습니다.");
 
-                    TokenType t2 = stack.Pop();
-                    TokenType t1 = stack.Pop();
+                    Node t2 = stack.Pop();
+                    Node t1 = stack.Pop();
+                    Node nNode = new Node(t, t1, t2);
+                    stack.Push(nNode);
                 }
                 else
                 {
-                    stack.Push(t);
+                    if (!t.IsConstant)
+                        isConst = false;
+                    stack.Push(new Node(t));
                 }
             }
+
+            if (stack.Count != 1)
+                throw new ExprCoreException("식이 잘못되었습니다.");
+
+            return new Expression(new TypeTree(stack.Pop()), isConst);
         }
 
-        public static List<TokenType> ConvertToPostfix(string expr)
+        private static List<TokenType> ConvertToPostfix(List<TokenType> tokenizedTokens)
         {
-            List<TokenType> tokens = Tokenize(expr);
             List<TokenType> postfix = new List<TokenType>();
             Stack<Operator> opstack = new Stack<Operator>();
 
-            foreach (TokenType t in tokens)
+            foreach (TokenType t in tokenizedTokens)
             {
                 Operator oper = t as Operator;
                 if (oper != null)
@@ -81,6 +97,104 @@ namespace ExprCore
             return postfix;
         }
 
+        private static void FlushTokenBuffer(List<TokenType> parameterBuffer, List<TokenType> tokenBuffer)
+        {
+            if(tokenBuffer.Count == 1)
+                parameterBuffer.Add(tokenBuffer[0]);
+            else
+                parameterBuffer.Add(ParseExpression(ParseComplex(tokenBuffer)));
+        }
+
+        private static void AppendTokenBuffer(TokenType t, string funcName, List<TokenType> tokenBuffer, List<TokenType> list)
+        {
+            if (funcName != null)
+                tokenBuffer.Add(t);
+            else list.Add(t);
+        }
+
+        // Parse Function, Matrix, Vector... etc
+        private static List<TokenType> ParseComplex(List<TokenType> semiTokenizedTypes)
+        {
+            List<TokenType> list = new List<TokenType>();
+            List<TokenType> parameterBuffer = new List<TokenType>();
+            List<TokenType> tokenBuffer = new List<TokenType>();
+            Variable markedVar = null;
+            string funcName = null;
+            int funcDepth = -1;
+            int bracketDepth = 0;
+
+            foreach (TokenType t in semiTokenizedTypes)
+            {
+                if (t is Variable)
+                {
+                    if (funcName != null)
+                        tokenBuffer.Add(t);
+                    else markedVar = (Variable)t;
+                }
+                else if (t is Operator)
+                {
+                    Operator op = t as Operator;
+                    Operator newOp = op;
+
+                    if (newOp.op == '{' || newOp.op == '[')
+                        newOp = new Operator('(');
+                    if (newOp.op == '}' || newOp.op == ']')
+                        newOp = new Operator(')');
+
+                    if (newOp.op == '(')
+                    {
+                        bracketDepth++;
+                        if (markedVar != null)
+                        {
+                            funcName = markedVar.var_name;
+                            funcDepth = bracketDepth;
+                            markedVar = null;
+                        }
+                        else AppendTokenBuffer(t, funcName, tokenBuffer, list);
+                    }
+                    else if (newOp.op == ')')
+                    {
+                        if (funcName != null && funcDepth == bracketDepth)
+                        {
+                            FlushTokenBuffer(parameterBuffer, tokenBuffer);
+                            list.Add(new Function(funcName, parameterBuffer));
+                            parameterBuffer.Clear();
+                            tokenBuffer.Clear();
+                            funcName = null;
+                        }
+                        else AppendTokenBuffer(t, funcName, tokenBuffer, list);
+                        bracketDepth--;
+                    }
+                    else if (newOp.op == ',')
+                    {
+                        if (funcName != null && funcDepth == bracketDepth)
+                        {
+                            if (funcName != null) FlushTokenBuffer(parameterBuffer, tokenBuffer);
+                            tokenBuffer.Clear();
+                        }
+                    }
+                    else AppendTokenBuffer(t, funcName, tokenBuffer, list);
+                }
+                else AppendTokenBuffer(t, funcName, tokenBuffer, list);
+
+                if (markedVar != null && t != markedVar)
+                {
+                    list.Add(markedVar);
+                    markedVar = null;
+                }
+            }
+
+            if (markedVar != null)
+                list.Add(markedVar);
+
+            if (bracketDepth > 0)
+                throw new ExprCoreException("괄호가 완전히 닫히지 않았습니다.");
+            else if (bracketDepth < 0)
+                throw new ExprCoreException("열린 괄호보다 닫힌 괄호가 더 많습니다.");
+
+            return list;
+        }
+
         private static void AppendParsedToken(List<TokenType> tokens, bool? isDigitStart, StringBuilder buffer)
         {
             if (isDigitStart == false)
@@ -92,12 +206,13 @@ namespace ExprCore
                     tokens.Add(new Variable(name));
             }
             else if (isDigitStart == true)
-                tokens.Add(new Number(Double.Parse(buffer.ToString())));
+                tokens.Add(new Number(double.Parse(buffer.ToString())));
 
             if (isDigitStart != null)
                 buffer.Clear();
         }
 
+        // Parse Operator, Number, Variable, Constant
         private static List<TokenType> Tokenize(string expr)
         {
             List<TokenType> tokens = new List<TokenType>();
@@ -132,6 +247,7 @@ namespace ExprCore
             }
 
             AppendParsedToken(tokens, isDigitStart, buffer);
+            tokens = ParseComplex(tokens);
             return tokens;
         }
 

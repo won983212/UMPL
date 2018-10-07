@@ -10,7 +10,7 @@ namespace ExprCore.Operators
         public readonly Type left_type;
         public readonly Type right_type;
 
-        public BinaryOperatorDef(Type ret, Type left_type, Operator oper, Type right_type) : base(ret, oper)
+        public BinaryOperatorDef(Type left_type, Operator oper, Type right_type) : base(oper)
         {
             this.left_type = left_type;
             this.right_type = right_type;
@@ -36,7 +36,7 @@ namespace ExprCore.Operators
 
         public override string ToString()
         {
-            return "(" + return_type.Name + ") " + left_type.Name + op + right_type.Name;
+            return left_type.Name + op + right_type.Name;
         }
     }
 }

@@ -15,11 +15,9 @@ namespace ConsoleDebugger
         {
             try
             {
-                // 7 a2 pi 2 x - * 7 / + y * - 4 2 / 2 - +
-                foreach (TokenType t in ExpressionParser.ConvertToPostfix("7-(7+4*(2-3)/7)*8-2+4/2"))
-                {
-                    Console.WriteLine(t);
-                }
+                // 5+12*7*(1-(4-3*1)/6-5)+12*(1+3/(12-3*7)*12)-1
+                Expression expr = ExpressionParser.ParseExpression("gcd(12+6-4, 382)");
+                Console.WriteLine(expr.Evaluate());
             }
             catch (ExprCoreException e)
             {

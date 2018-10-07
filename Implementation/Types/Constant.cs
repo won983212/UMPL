@@ -15,6 +15,7 @@ namespace ExprCore.Types
         {
             this.label = label;
             this.value = value;
+            IsConstant = true;
         }
 
         public override bool Equals(object obj)
@@ -31,6 +32,13 @@ namespace ExprCore.Types
         public override string ToString()
         {
             return label;
+        }
+
+        public override bool IsAcceptable(Type type)
+        {
+            if (type == typeof(Number))
+                return true;
+            return base.IsAcceptable(type);
         }
     }
 }

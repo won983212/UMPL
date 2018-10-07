@@ -9,7 +9,7 @@ namespace ExprCore.Operators
     {
         public readonly Type operand_type;
 
-        public UnaryOperatorDef(Type ret, Operator oper, Type operand_type) : base(ret, oper)
+        public UnaryOperatorDef(Operator oper, Type operand_type) : base(oper)
         {
             this.operand_type = operand_type;
         }
@@ -32,7 +32,7 @@ namespace ExprCore.Operators
 
         public override string ToString()
         {
-            return "(" + return_type.Name + ") " + op + operand_type.Name;
+            return op + operand_type.Name;
         }
     }
 }

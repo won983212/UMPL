@@ -12,13 +12,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)ConstantFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\ExprCoreException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExpressionParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Functions\FunctionRegistry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MathHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Operators\BinaryOperatorDef.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Operators\OperatorDef.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Operators\OperatorRegistry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Operators\UnaryOperatorDef.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Renderer\IRenderContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Renderer\TreeRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Types\Constant.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Types\Expression.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\Function.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Types\Number.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Types\Operator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Types\TokenType.cs" />

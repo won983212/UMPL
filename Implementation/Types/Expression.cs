@@ -6,9 +6,27 @@ namespace ExprCore.Types
 {
     class Expression : TokenType
     {
-        public Expression(string expr)
-        {
+        public TypeTree ExprTree { get; private set; }
 
+        public Expression(TypeTree tree, bool isConstant)
+        {
+            ExprTree = tree;
+            IsConstant = isConstant;
+        }
+
+        public TokenType Evaluate()
+        {
+            return Evaluate(new Dictionary<Variable, Number>());
+        }
+
+        public override TokenType Evaluate(Dictionary<Variable, Number> var_values)
+        {
+            return ExprTree.Evaluate(var_values);
+        }
+
+        public override string ToString()
+        {
+            return ExprTree.ToString();
         }
     }
 }

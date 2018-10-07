@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExprCore.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -21,12 +22,21 @@ namespace ExprCore.Types
 
         public override int GetHashCode()
         {
-            return EqualityComparer<string>.Default.GetHashCode(var_name);
+            return var_name.GetHashCode();
         }
 
         public override string ToString()
         {
             return var_name;
+        }
+
+        public override TokenType Evaluate(Dictionary<Variable, Number> var_values)
+        {
+            if (var_values.ContainsKey(this))
+            {
+                return new Number(var_values[this]);
+            }
+            else throw new ExprCoreException("변수 " + var_name + "의 값을 찾을 수 없습니다.");
         }
 
         public static bool IsVariableCharacter(char c)

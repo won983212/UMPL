@@ -6,8 +6,9 @@ namespace ExprCore.Types
 {
     class Operator : TokenType
     {
-        private static readonly string Operators = "+-*/%^=@!(){}[],";
-        private static readonly int[] OperatorPriority = new int[] { 3, 3, 4, 4, 2, 5, 1, 4, 5, 0, 0, 0, 0, 0, 0, 0 };
+                                                                  // +  -  *  /  %  ^  =  @  !  (  )  {  }  [  ]  ,  &  |
+        private static readonly int[] OperatorPriority = new int[] { 3, 3, 4, 4, 2, 5, 1, 4, 5, 0, 0, 0, 0, 0, 0, 0, 4, 3 };
+        private static readonly string Operators = "+-*/%^=@!(){}[],&|";
         public readonly char op;
         public readonly int priority;
 

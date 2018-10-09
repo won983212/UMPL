@@ -94,5 +94,26 @@ namespace ExprCore.Functions
             CheckFunctionType(funcName, parameters);
             return GetFunction(funcName).body(parameters);
         }
+
+        static FunctionRegistry()
+        {
+            // Number
+            RegisterFunction("gcd", new Type[] { typeof(Number), typeof(Number) }, Number.Gcd);
+            RegisterFunction("lcm", new Type[] { typeof(Number), typeof(Number) }, Number.Lcm);
+            RegisterFunction("reduce", new Type[] { typeof(Number) }, Number.Reduce);
+
+            // Vector
+            RegisterFunction("length", new Type[] { typeof(Vector) }, Vector.Length);
+            RegisterFunction("norm", new Type[] { typeof(Vector) }, Vector.Normalize);
+
+            // Matrix
+            RegisterFunction("gaussbot", new Type[] { typeof(Matrix) }, Matrix.GaussBot);
+            RegisterFunction("gausstop", new Type[] { typeof(Matrix) }, Matrix.GaussTop);
+            RegisterFunction("gauss", new Type[] { typeof(Matrix) }, Matrix.Gauss);
+            RegisterFunction("det", new Type[] { typeof(Matrix) }, Matrix.Det);
+            RegisterFunction("trans", new Type[] { typeof(Matrix) }, Matrix.Transpose);
+            RegisterFunction("rank", new Type[] { typeof(Matrix) }, Matrix.Rank);
+            RegisterFunction("inv", new Type[] { typeof(Matrix) }, Matrix.Inverse);
+        }
     }
 }

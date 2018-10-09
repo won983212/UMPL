@@ -7,11 +7,11 @@ namespace ExprCore.Types
     class Constant : TokenType
     {
         public readonly string label;
-        public readonly double value;
+        public readonly TokenType value;
 
         public Constant(Constant inst) : this(inst.label, inst.value) { }
 
-        public Constant(string label, double value)
+        public Constant(string label, TokenType value)
         {
             this.label = label;
             this.value = value;
@@ -34,11 +34,14 @@ namespace ExprCore.Types
             return label;
         }
 
+        public override TokenType Evaluate(Dictionary<Variable, Number> var_values)
+        {
+            return value.Evaluate(var_values);
+        }
+
         public override bool IsAcceptable(Type type)
         {
-            if (type == typeof(Number))
-                return true;
-            return base.IsAcceptable(type);
+            return value.IsAcceptable(type);
         }
     }
 }

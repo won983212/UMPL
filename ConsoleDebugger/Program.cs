@@ -16,7 +16,7 @@ namespace ConsoleDebugger
             try
             {
                 // 5+12*7*(1-(4-3*1)/6-5)+12*(1+3/(12-3*7)*12)-1
-                Expression expr = ExpressionParser.ParseExpression("gcd(12+6-4, 382)");
+                Expression expr = ExpressionParser.ParseExpression("inv(mat3_3(2,3,4,5,2,3,4,5,2))");
                 Console.WriteLine(expr.Evaluate());
             }
             catch (ExprCoreException e)

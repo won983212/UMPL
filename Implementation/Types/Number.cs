@@ -20,7 +20,7 @@ namespace ExprCore.Types
         public Number(double realnumber)
         {
             IsConstant = true;
-            if ((realnumber - (long) realnumber) == 0)
+            if ((realnumber - (long)realnumber) == 0)
             {
                 Initialize((long)realnumber, 1);
                 return;
@@ -33,7 +33,7 @@ namespace ExprCore.Types
             double b = neg ? -realnumber : realnumber;
             long pn = 0, pd = 1;
             long a, temp;
-            
+
             do
             {
                 a = (int)b;
@@ -91,7 +91,7 @@ namespace ExprCore.Types
             numerator /= k;
             denomiator /= k;
 
-            if(denomiator < 0)
+            if (denomiator < 0)
             {
                 numerator *= -1;
                 denomiator *= -1;
@@ -133,8 +133,13 @@ namespace ExprCore.Types
             return base.IsAcceptable(type);
         }
 
+        public static implicit operator Number(double d)
+        {
+            return new Number(d);
+        }
+
         // Operators
-        private static TokenType Add(TokenType left, TokenType right)
+        public static Number Add(TokenType left, TokenType right)
         {
             Number l = left as Number;
             Number r = right as Number;
@@ -142,7 +147,7 @@ namespace ExprCore.Types
             return new Number(l.numerator * lcm / l.denomiator + r.numerator * lcm / r.denomiator, lcm).Reduce();
         }
 
-        private static TokenType Subtract(TokenType left, TokenType right)
+        public static Number Subtract(TokenType left, TokenType right)
         {
             Number l = left as Number;
             Number r = right as Number;
@@ -150,35 +155,35 @@ namespace ExprCore.Types
             return new Number(l.numerator * lcm / l.denomiator - r.numerator * lcm / r.denomiator, lcm).Reduce();
         }
 
-        private static TokenType Multiply(TokenType left, TokenType right)
+        public static Number Multiply(TokenType left, TokenType right)
         {
             Number l = left as Number;
             Number r = right as Number;
             return new Number(l.numerator * r.numerator, l.denomiator * r.denomiator).Reduce();
         }
 
-        private static TokenType Divide(TokenType left, TokenType right)
+        public static Number Divide(TokenType left, TokenType right)
         {
             Number l = left as Number;
             Number r = right as Number;
             return new Number(l.numerator * r.denomiator, l.denomiator * r.numerator).Reduce();
         }
 
-        private static TokenType Power(TokenType left, TokenType right)
+        public static Number Power(TokenType left, TokenType right)
         {
             Number l = left as Number;
             Number r = right as Number;
             return new Number(Math.Pow(l.GetValue(), r.GetValue())).Reduce();
         }
 
-        private static TokenType Mod(TokenType left, TokenType right)
+        public static Number Mod(TokenType left, TokenType right)
         {
             Number l = left as Number;
             Number r = right as Number;
             return new Number(l.GetValue() % r.GetValue()).Reduce();
         }
 
-        private static TokenType Negative(TokenType operand)
+        public static Number Negative(TokenType operand)
         {
             Number n = operand as Number;
             return new Number(-n.numerator, n.denomiator);
@@ -191,7 +196,7 @@ namespace ExprCore.Types
                 throw new ExprCoreException("정수에 대해서만 GCD연산이 가능합니다.");
         }
 
-        private static TokenType Gcd(List<TokenType> parameters)
+        public static Number Gcd(List<TokenType> parameters)
         {
             Number p1 = parameters[0] as Number;
             Number p2 = parameters[1] as Number;
@@ -199,7 +204,7 @@ namespace ExprCore.Types
             return new Number(MathHelper.GCD((long) p1.GetValue(), (long)p2.GetValue()));
         }
 
-        private static TokenType Lcm(List<TokenType> parameters)
+        public static Number Lcm(List<TokenType> parameters)
         {
             Number p1 = parameters[0] as Number;
             Number p2 = parameters[1] as Number;
@@ -207,18 +212,16 @@ namespace ExprCore.Types
             return new Number(MathHelper.LCM((long)p1.GetValue(), (long)p2.GetValue()));
         }
 
-        static Number()
+        public static Number Reduce(List<TokenType> parameters)
         {
-            OperatorRegistry.RegisterBinary(typeof(Number), typeof(Number), new Operator('+'), typeof(Number), Add);
-            OperatorRegistry.RegisterBinary(typeof(Number), typeof(Number), new Operator('-'), typeof(Number), Subtract);
-            OperatorRegistry.RegisterBinary(typeof(Number), typeof(Number), new Operator('*'), typeof(Number), Multiply);
-            OperatorRegistry.RegisterBinary(typeof(Number), typeof(Number), new Operator('/'), typeof(Number), Divide);
-            OperatorRegistry.RegisterBinary(typeof(Number), typeof(Number), new Operator('^'), typeof(Number), Power);
-            OperatorRegistry.RegisterBinary(typeof(Number), typeof(Number), new Operator('%'), typeof(Number), Mod);
-            OperatorRegistry.RegisterUnary(typeof(Number), new Operator('-'), typeof(Number), Negative);
+            Number p1 = parameters[0] as Number;
+            return new Number(p1).Reduce();
+        }
 
-            FunctionRegistry.RegisterFunction("gcd", new Type[] { typeof(Number), typeof(Number) }, Gcd);
-            FunctionRegistry.RegisterFunction("lcm", new Type[] { typeof(Number), typeof(Number) }, Lcm);
+        // Untility
+        public static Number Sqrt(Number n)
+        {
+            return new Number(Math.Sqrt(n.GetValue()));
         }
     }
 }

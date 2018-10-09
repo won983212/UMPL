@@ -105,13 +105,6 @@ namespace ExprCore
                 parameterBuffer.Add(ParseExpression(ParseComplex(tokenBuffer)));
         }
 
-        private static void AppendTokenBuffer(TokenType t, string funcName, List<TokenType> tokenBuffer, List<TokenType> list)
-        {
-            if (funcName != null)
-                tokenBuffer.Add(t);
-            else list.Add(t);
-        }
-
         // Parse Function, Matrix, Vector... etc
         private static List<TokenType> ParseComplex(List<TokenType> semiTokenizedTypes)
         {
@@ -130,18 +123,18 @@ namespace ExprCore
                     if (funcName != null)
                         tokenBuffer.Add(t);
                     else markedVar = (Variable)t;
+                    continue;
                 }
                 else if (t is Operator)
                 {
-                    Operator op = t as Operator;
-                    Operator newOp = op;
+                    Operator oper = t as Operator;
 
-                    if (newOp.op == '{' || newOp.op == '[')
-                        newOp = new Operator('(');
-                    if (newOp.op == '}' || newOp.op == ']')
-                        newOp = new Operator(')');
+                    if (oper.op == '{' || oper.op == '[')
+                        oper = new Operator('(');
+                    if (oper.op == '}' || oper.op == ']')
+                        oper = new Operator(')');
 
-                    if (newOp.op == '(')
+                    if (oper.op == '(')
                     {
                         bracketDepth++;
                         if (markedVar != null)
@@ -149,33 +142,62 @@ namespace ExprCore
                             funcName = markedVar.var_name;
                             funcDepth = bracketDepth;
                             markedVar = null;
+                            continue;
                         }
-                        else AppendTokenBuffer(t, funcName, tokenBuffer, list);
                     }
-                    else if (newOp.op == ')')
+                    else if (oper.op == ')')
                     {
                         if (funcName != null && funcDepth == bracketDepth)
                         {
                             FlushTokenBuffer(parameterBuffer, tokenBuffer);
-                            list.Add(new Function(funcName, parameterBuffer));
+
+                            if (funcName.ToLower() == "vec")
+                            {
+                                if (parameterBuffer.Count == 2)
+                                    list.Add(new Vec2(parameterBuffer));
+                                else if (parameterBuffer.Count == 3)
+                                    list.Add(new Vec3(parameterBuffer));
+                                else
+                                    list.Add(new Function(funcName, parameterBuffer));
+                            }
+                            else if (funcName.ToLower().StartsWith("mat"))
+                            {
+                                string[] sizeText = funcName.Substring(3).Split('_');
+                                int rows = 0, columns = 0;
+
+                                if (sizeText.Length != 2)
+                                    throw new ExprCoreException("Matrix의 크기를 입력하지 않았습니다: " + funcName);
+                                if (!int.TryParse(sizeText[0], out rows))
+                                    throw new ExprCoreException("Matrix의 '행'이 정수가 아닙니다: " + sizeText[0]);
+                                if (!int.TryParse(sizeText[1], out columns))
+                                    throw new ExprCoreException("Matrix의 '열'이 정수가 아닙니다: " + sizeText[1]);
+
+                                list.Add(new Matrix(rows, columns, parameterBuffer));
+                            }
+                            else list.Add(new Function(funcName, parameterBuffer));
+
                             parameterBuffer.Clear();
                             tokenBuffer.Clear();
                             funcName = null;
+                            bracketDepth--;
+                            continue;
                         }
-                        else AppendTokenBuffer(t, funcName, tokenBuffer, list);
                         bracketDepth--;
                     }
-                    else if (newOp.op == ',')
+                    else if (oper.op == ',')
                     {
                         if (funcName != null && funcDepth == bracketDepth)
                         {
-                            if (funcName != null) FlushTokenBuffer(parameterBuffer, tokenBuffer);
+                            FlushTokenBuffer(parameterBuffer, tokenBuffer);
                             tokenBuffer.Clear();
+                            continue;
                         }
                     }
-                    else AppendTokenBuffer(t, funcName, tokenBuffer, list);
                 }
-                else AppendTokenBuffer(t, funcName, tokenBuffer, list);
+
+                if (funcName != null)
+                    tokenBuffer.Add(t);
+                else list.Add(t);
 
                 if (markedVar != null && t != markedVar)
                 {

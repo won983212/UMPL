@@ -16,8 +16,11 @@ namespace ExprCore
             return ParseExpression(Tokenize(expr));
         }
 
-        private static Expression ParseExpression(List<TokenType> tokenizedTokens)
+        public static Expression ParseExpression(List<TokenType> tokenizedTokens)
         {
+            if (tokenizedTokens.Count == 0)
+                throw new ExprCoreException("식이 비어있습니다.");
+
             List<TokenType> postfix_expr = ConvertToPostfix(tokenizedTokens);
             Stack<Node> stack = new Stack<Node>();
             bool isConst = true;
@@ -45,7 +48,7 @@ namespace ExprCore
             if (stack.Count != 1)
                 throw new ExprCoreException("식이 잘못되었습니다.");
 
-            return new Expression(new TypeTree(stack.Pop()), isConst);
+            return new Expression(new TypeTree(tokenizedTokens, stack.Pop()), isConst);
         }
 
         private static List<TokenType> ConvertToPostfix(List<TokenType> tokenizedTokens)
@@ -235,7 +238,7 @@ namespace ExprCore
         }
 
         // Parse Operator, Number, Variable, Constant
-        private static List<TokenType> Tokenize(string expr)
+        public static List<TokenType> Tokenize(string expr)
         {
             List<TokenType> tokens = new List<TokenType>();
             StringBuilder buffer = new StringBuilder();

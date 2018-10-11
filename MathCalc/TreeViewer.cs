@@ -70,7 +70,7 @@ namespace MathCalc
                 if (warning != null)
                 {
                     Typeface type = new Typeface("맑은 고딕");
-                    FormattedText warningText = new FormattedText(warning, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, type, 12, Brushes.Red);
+                    FormattedText warningText = new FormattedText(warning, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, type, 12, Brushes.Red, 1);
                     ctx.DrawText(warningText, new Point(5, 0));
                     ctx.PushTransform(new TranslateTransform(0, 20));
                 }

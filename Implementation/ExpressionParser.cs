@@ -198,15 +198,15 @@ namespace ExprCore
                     }
                 }
 
-                if (funcName != null)
-                    tokenBuffer.Add(t);
-                else list.Add(t);
-
                 if (markedVar != null && t != markedVar)
                 {
                     list.Add(markedVar);
                     markedVar = null;
                 }
+
+                if (funcName != null)
+                    tokenBuffer.Add(t);
+                else list.Add(t);
             }
 
             if (markedVar != null)

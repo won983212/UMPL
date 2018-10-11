@@ -57,7 +57,7 @@ namespace MathCalc
         private FormattedText CreateText(string text)
         {
             Typeface typeface = new Typeface(FontFamily);
-            return new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, typeface, 12, Foreground);
+            return new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, typeface, 12, Foreground, 1);
         }
     }
 }

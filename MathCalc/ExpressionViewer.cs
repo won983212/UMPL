@@ -17,7 +17,7 @@ namespace MathCalc
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
-            ExprTreeVisualizer.DrawTreeElements(drawingContext, ActualWidth, ActualHeight, null);
+            ExprTreeVisualizer.DrawTreeElements(drawingContext, 10, 10, ActualWidth, ActualHeight, null);
         }
     }
 }

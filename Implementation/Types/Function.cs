@@ -8,8 +8,8 @@ namespace ExprCore.Types
 {
     class Function : TokenType
     {
-        private readonly string funcName;
-        private readonly List<TokenType> parameters;
+        public readonly string funcName;
+        public readonly List<TokenType> parameters;
 
         public Function(string funcName, List<TokenType> parameters)
         {
@@ -28,7 +28,7 @@ namespace ExprCore.Types
             }
         }
 
-        public override TokenType Evaluate(Dictionary<Variable, Number> var_values)
+        public override TokenType Evaluate(Dictionary<Variable, Fraction> var_values)
         {
             List<TokenType> evaluated = new List<TokenType>();
             foreach(TokenType t in parameters)

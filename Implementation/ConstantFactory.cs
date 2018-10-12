@@ -26,8 +26,8 @@ namespace ExprCore
 
         static ConstantFactory()
         {
-            constants.Add("pi", new Constant("π", new Number(Math.PI)));
-            constants.Add("e", new Constant("e", new Number(Math.E)));
+            constants.Add("pi", new Constant("π", new Fraction(Math.PI)));
+            constants.Add("e", new Constant("e", new Fraction(Math.E)));
         }
     }
 }

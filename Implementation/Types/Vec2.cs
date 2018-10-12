@@ -27,7 +27,7 @@ namespace ExprCore.Types
             return "Vec2(" + X + ", " + Y + ")";
         }
 
-        public override TokenType Evaluate(Dictionary<Variable, Number> var_values)
+        public override TokenType Evaluate(Dictionary<Variable, Fraction> var_values)
         {
             return new Vec2(X.Evaluate(var_values), Y.Evaluate(var_values));
         }
@@ -38,7 +38,7 @@ namespace ExprCore.Types
             Vec2 l = left as Vec2;
             Vec2 r = right as Vec2;
             CheckNumber(l, r);
-            return new Vec2(Number.Add(l.X, r.X), Number.Add(l.Y, r.Y));
+            return new Vec2(Fraction.Add(l.X, r.X), Fraction.Add(l.Y, r.Y));
         }
 
         public static Vec2 Subtract(TokenType left, TokenType right)
@@ -46,23 +46,23 @@ namespace ExprCore.Types
             Vec2 l = left as Vec2;
             Vec2 r = right as Vec2;
             CheckNumber(l, r);
-            return new Vec2(Number.Subtract(l.X, r.X), Number.Subtract(l.Y, r.Y));
+            return new Vec2(Fraction.Subtract(l.X, r.X), Fraction.Subtract(l.Y, r.Y));
         }
 
         public static Vec2 Scala(TokenType left, TokenType right)
         {
-            Number l = left as Number;
+            Fraction l = left as Fraction;
             Vec2 r = right as Vec2;
             CheckNumber(r);
-            return new Vec2(Number.Multiply(l, r.X), Number.Multiply(l, r.Y));
+            return new Vec2(Fraction.Multiply(l, r.X), Fraction.Multiply(l, r.Y));
         }
 
-        public static Number Dot(TokenType left, TokenType right)
+        public static Fraction Dot(TokenType left, TokenType right)
         {
             Vec2 l = left as Vec2;
             Vec2 r = right as Vec2;
             CheckNumber(l, r);
-            return Number.Add(Number.Multiply(l.X, r.X), Number.Multiply(l.Y, r.Y));
+            return Fraction.Add(Fraction.Multiply(l.X, r.X), Fraction.Multiply(l.Y, r.Y));
         }
     }
 }

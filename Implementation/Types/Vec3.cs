@@ -25,7 +25,7 @@ namespace ExprCore.Types
             return "Vec3(" + X + ", " + Y + ", " + Z + ")";
         }
 
-        public override TokenType Evaluate(Dictionary<Variable, Number> var_values)
+        public override TokenType Evaluate(Dictionary<Variable, Fraction> var_values)
         {
             return new Vec3(X.Evaluate(var_values), Y.Evaluate(var_values), Z.Evaluate(var_values));
         }
@@ -36,7 +36,7 @@ namespace ExprCore.Types
             Vec3 l = left as Vec3;
             Vec3 r = right as Vec3;
             CheckNumber(l, r);
-            return new Vec3(Number.Add(l.X, r.X), Number.Add(l.Y, r.Y), Number.Add(l.Z, r.Z));
+            return new Vec3(Fraction.Add(l.X, r.X), Fraction.Add(l.Y, r.Y), Fraction.Add(l.Z, r.Z));
         }
 
         public static Vec3 Subtract(TokenType left, TokenType right)
@@ -44,23 +44,23 @@ namespace ExprCore.Types
             Vec3 l = left as Vec3;
             Vec3 r = right as Vec3;
             CheckNumber(l, r);
-            return new Vec3(Number.Subtract(l.X, r.X), Number.Subtract(l.Y, r.Y), Number.Subtract(l.Z, r.Z));
+            return new Vec3(Fraction.Subtract(l.X, r.X), Fraction.Subtract(l.Y, r.Y), Fraction.Subtract(l.Z, r.Z));
         }
 
         public static Vec3 Scala(TokenType left, TokenType right)
         {
-            Number l = left as Number;
+            Fraction l = left as Fraction;
             Vec3 r = right as Vec3;
             CheckNumber(r);
-            return new Vec3(Number.Multiply(l, r.X), Number.Multiply(l, r.Y), Number.Multiply(l, r.Z));
+            return new Vec3(Fraction.Multiply(l, r.X), Fraction.Multiply(l, r.Y), Fraction.Multiply(l, r.Z));
         }
 
-        public static Number Dot(TokenType left, TokenType right)
+        public static Fraction Dot(TokenType left, TokenType right)
         {
             Vec3 l = left as Vec3;
             Vec3 r = right as Vec3;
             CheckNumber(r);
-            return Number.Add(Number.Add(Number.Multiply(l.X, r.X), Number.Multiply(l.Y, r.Y)), Number.Multiply(l.Z, r.Z));
+            return Fraction.Add(Fraction.Add(Fraction.Multiply(l.X, r.X), Fraction.Multiply(l.Y, r.Y)), Fraction.Multiply(l.Z, r.Z));
         }
 
         public static Vec3 Cross(TokenType left, TokenType right)
@@ -69,9 +69,9 @@ namespace ExprCore.Types
             Vec3 r = right as Vec3;
             CheckNumber(r);
 
-            Number x = Number.Subtract(Number.Multiply(l.Y, r.Z), Number.Multiply(l.Z, r.Y));
-            Number y = Number.Subtract(Number.Multiply(l.Z, r.X), Number.Multiply(l.X, r.Z));
-            Number z = Number.Subtract(Number.Multiply(l.X, r.Y), Number.Multiply(l.Y, r.X));
+            Fraction x = Fraction.Subtract(Fraction.Multiply(l.Y, r.Z), Fraction.Multiply(l.Z, r.Y));
+            Fraction y = Fraction.Subtract(Fraction.Multiply(l.Z, r.X), Fraction.Multiply(l.X, r.Z));
+            Fraction z = Fraction.Subtract(Fraction.Multiply(l.X, r.Y), Fraction.Multiply(l.Y, r.X));
             return new Vec3(x, y, z);
         }
     }

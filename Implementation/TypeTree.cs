@@ -76,7 +76,7 @@ namespace ExprCore
         // OperatorProcess: 현재 노드가 operator면 스택에 넣을 T
         // OperatorProcess: 현재 노드가 operator가 아니면 스택에 넣을 T
         // Node, T, T, T : 현재 노드, 팝된 1번째 노드, 팝된 2번째 노드, stack에 추가할 T
-        public T ProcessCalculate<T>(Func<Node, T, T, T> OperatorProcess, Func<Node, T> NonOperatorProcess)
+        public T ProcessCalculate<T>(Func<Operator, T, T, T> OperatorProcess, Func<TokenType, T> NonOperatorProcess)
         {
             Stack<T> stack = new Stack<T>();
 
@@ -86,11 +86,11 @@ namespace ExprCore
                 {
                     T p2 = stack.Pop();
                     T p1 = stack.Pop();
-                    stack.Push(OperatorProcess(node, p1, p2));
+                    stack.Push(OperatorProcess((Operator)node.data, p1, p2));
                 }
                 else
                 {
-                    stack.Push(NonOperatorProcess(node));
+                    stack.Push(NonOperatorProcess(node.data));
                 }
             });
 
@@ -100,29 +100,28 @@ namespace ExprCore
             return stack.Pop();
         }
 
-        public TokenType Evaluate(Dictionary<Variable, Number> var_values)
+        public TokenType Evaluate(Dictionary<Variable, Fraction> var_values)
         {
             return ProcessCalculate((node, p1, p2) => {
-                return OperatorRegistry.ExecuteBinaryOperation((Operator)node.data, p1.Evaluate(var_values), p2.Evaluate(var_values));
+                return OperatorRegistry.ExecuteBinaryOperation(node, p1.Evaluate(var_values), p2.Evaluate(var_values));
             },
             (node) => {
-                return node.data;
+                return node;
             }).Evaluate(var_values);
         }
 
         public override string ToString()
         {
-            return ProcessCalculate((node, e1, e2) => {
-                Operator op = (Operator)node.data;
+            return ProcessCalculate((op, e1, e2) => {
                 if (e1.priority != -1 && e1.priority < op.priority)
                     e1.PutBracket();
                 if (e2.priority != -1 && (e2.priority < op.priority || (e2.priority == op.priority && op.op == '-')))
                     e2.PutBracket();
 
-                return new ExprNode(op.priority, e1 + node.data.ToString() + e2);
+                return new ExprNode(op.priority, e1 + op.ToString() + e2);
             },
             (node) => {
-                return new ExprNode(-1, node.data.ToString());
+                return new ExprNode(-1, node.ToString());
             }).Expr;
         }
     }

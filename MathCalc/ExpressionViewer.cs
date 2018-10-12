@@ -17,7 +17,9 @@ namespace MathCalc
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
-            ExprTreeVisualizer.DrawTreeElements(drawingContext, 10, 10, ActualWidth, ActualHeight, null);
+
+            TypeTree expr = ExpressionParser.ParseExpression("(b+sqrt(b^2-4/3*a*c))/(2*a)").ExprTree;
+            ExprTreeVisualizer.DrawTreeElements(drawingContext, 10, 10, 14, expr);
         }
     }
 }

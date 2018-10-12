@@ -11,37 +11,39 @@ namespace MathCalc.TypeRenderer
 {
     class BracketElement : FormulaElement
     {
-        public const double BracketWidth = 5;
-        public const double BracketGap = 2;
-        public const double BracketSize = 16;
-        private static readonly FormattedText OpenBracket;
-        private static readonly FormattedText CloseBracket;
+        public const double BracketGap = 0;
+        private static readonly FormattedText OpenBracket = new FormattedText("(", CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ExprTreeVisualizer.FormulaFont, 16, Foreground, 1);
+        private static readonly FormattedText CloseBracket = new FormattedText(")", CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ExprTreeVisualizer.FormulaFont, 16, Foreground, 1);
         private readonly FormulaElement element;
 
-        static BracketElement()
+        public static double OpenBracketWidth
         {
-            OpenBracket = new FormattedText("(", CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ExprTreeVisualizer.FormulaFont, BracketSize, Foreground, 1);
-            CloseBracket = new FormattedText(")", CultureInfo.CurrentCulture, FlowDirection.LeftToRight, ExprTreeVisualizer.FormulaFont, BracketSize, Foreground, 1);
+            get { return OpenBracket.Width; }
+        }
+
+        public static double CloseBracketWidth
+        {
+            get { return CloseBracket.Width; }
         }
 
         public BracketElement(FormulaElement element)
         {
             this.element = element;
-            Width = element.Width + (BracketWidth + BracketGap) * 2;
+            Width = element.Width + OpenBracket.Width + CloseBracket.Width + BracketGap * 2;
             Height = element.Height;
         }
 
         public override void Draw(DrawingContext ctx)
         {
-            DrawBracket(ctx, 0, 0, true);
-            DrawBracket(ctx, element.Width + BracketWidth + BracketGap * 2, 0, false);
-            element.Draw(ctx, BracketWidth + BracketGap, 0);
+            DrawBracket(ctx, 0, 0, Height, true);
+            DrawBracket(ctx, Width - CloseBracket.Width, 0, Height, false);
+            element.Draw(ctx, OpenBracket.Width + BracketGap, 0);
         }
 
-        private void DrawBracket(DrawingContext ctx, double x, double y, bool open)
+        public static void DrawBracket(DrawingContext ctx, double x, double y, double height, bool open)
         {
             FormattedText text = open ? OpenBracket : CloseBracket;
-            ctx.PushTransform(new ScaleTransform(BracketWidth / text.Width, Height / text.Height, x, y));
+            ctx.PushTransform(new ScaleTransform(1, height / text.Height, x, y));
             ctx.DrawText(text, new Point(x, y));
             ctx.Pop();
         }

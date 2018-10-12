@@ -231,14 +231,14 @@ namespace ExprCore
                     tokens.Add(new Variable(name));
             }
             else if (isDigitStart == true)
-                tokens.Add(new Number(double.Parse(buffer.ToString())));
+                tokens.Add(new Fraction(double.Parse(buffer.ToString())));
 
             if (isDigitStart != null)
                 buffer.Clear();
         }
 
         // Parse Operator, Number, Variable, Constant
-        public static List<TokenType> Tokenize(string expr)
+        private static List<TokenType> Tokenize(string expr)
         {
             List<TokenType> tokens = new List<TokenType>();
             StringBuilder buffer = new StringBuilder();

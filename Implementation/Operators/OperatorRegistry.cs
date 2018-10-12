@@ -81,24 +81,24 @@ namespace ExprCore.Operators
         static OperatorRegistry()
         {
             // Number
-            RegisterBinary(typeof(Number), typeof(Number), new Operator('+'), typeof(Number), Number.Add);
-            RegisterBinary(typeof(Number), typeof(Number), new Operator('-'), typeof(Number), Number.Subtract);
-            RegisterBinary(typeof(Number), typeof(Number), new Operator('*'), typeof(Number), Number.Multiply);
-            RegisterBinary(typeof(Number), typeof(Number), new Operator('/'), typeof(Number), Number.Divide);
-            RegisterBinary(typeof(Number), typeof(Number), new Operator('^'), typeof(Number), Number.Power);
-            RegisterBinary(typeof(Number), typeof(Number), new Operator('%'), typeof(Number), Number.Mod);
-            RegisterUnary(typeof(Number), new Operator('-'), typeof(Number), Number.Negative);
+            RegisterBinary(typeof(Fraction), typeof(Fraction), new Operator('+'), typeof(Fraction), Fraction.Add);
+            RegisterBinary(typeof(Fraction), typeof(Fraction), new Operator('-'), typeof(Fraction), Fraction.Subtract);
+            RegisterBinary(typeof(Fraction), typeof(Fraction), new Operator('*'), typeof(Fraction), Fraction.Multiply);
+            RegisterBinary(typeof(Fraction), typeof(Fraction), new Operator('/'), typeof(Fraction), Fraction.Divide);
+            RegisterBinary(typeof(Fraction), typeof(Fraction), new Operator('^'), typeof(Fraction), Fraction.Power);
+            RegisterBinary(typeof(Fraction), typeof(Fraction), new Operator('%'), typeof(Fraction), Fraction.Mod);
+            RegisterUnary(typeof(Fraction), new Operator('-'), typeof(Fraction), Fraction.Negative);
 
             // Vec2
             RegisterBinary(typeof(Vec2), typeof(Vec2), new Operator('+'), typeof(Vec2), Vec2.Add);
             RegisterBinary(typeof(Vec2), typeof(Vec2), new Operator('-'), typeof(Vec2), Vec2.Subtract);
-            RegisterBinaryCommutative(typeof(Vec2), typeof(Number), new Operator('*'), typeof(Vec2), Vec2.Scala);
+            RegisterBinaryCommutative(typeof(Vec2), typeof(Fraction), new Operator('*'), typeof(Vec2), Vec2.Scala);
             RegisterBinary(typeof(Vec2), typeof(Vec2), new Operator('*'), typeof(Vec2), Vec2.Dot);
 
             // Vec3
             RegisterBinary(typeof(Vec3), typeof(Vec3), new Operator('+'), typeof(Vec3), Vec3.Add);
             RegisterBinary(typeof(Vec3), typeof(Vec3), new Operator('-'), typeof(Vec3), Vec3.Subtract);
-            RegisterBinaryCommutative(typeof(Vec3), typeof(Number), new Operator('*'), typeof(Vec3), Vec3.Scala);
+            RegisterBinaryCommutative(typeof(Vec3), typeof(Fraction), new Operator('*'), typeof(Vec3), Vec3.Scala);
             RegisterBinary(typeof(Vec3), typeof(Vec3), new Operator('*'), typeof(Vec3), Vec3.Dot);
             RegisterBinary(typeof(Vec3), typeof(Vec3), new Operator('@'), typeof(Vec3), Vec3.Cross);
 
@@ -106,7 +106,7 @@ namespace ExprCore.Operators
             RegisterBinary(typeof(Matrix), typeof(Matrix), new Operator('+'), typeof(Matrix), Matrix.Add);
             RegisterBinary(typeof(Matrix), typeof(Matrix), new Operator('-'), typeof(Matrix), Matrix.Subtract);
             RegisterBinary(typeof(Matrix), typeof(Matrix), new Operator('*'), typeof(Matrix), Matrix.Multiply);
-            RegisterBinaryCommutative(typeof(Matrix), typeof(Number), new Operator('*'), typeof(Matrix), Matrix.Scala);
+            RegisterBinaryCommutative(typeof(Matrix), typeof(Fraction), new Operator('*'), typeof(Matrix), Matrix.Scala);
         }
     }
 }

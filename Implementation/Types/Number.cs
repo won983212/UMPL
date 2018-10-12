@@ -7,17 +7,17 @@ using System.Text;
 
 namespace ExprCore.Types
 {
-    class Number : TokenType
+    class Fraction : TokenType
     {
         const double ERROR = 0.0000001;
         public long numerator;
         public long denomiator;
 
-        public Number(long number) : this(number, 1) { }
+        public Fraction(long number) : this(number, 1) { }
 
-        public Number(Number number) : this(number.numerator, number.denomiator) { }
+        public Fraction(Fraction number) : this(number.numerator, number.denomiator) { }
 
-        public Number(double realnumber)
+        public Fraction(double realnumber)
         {
             IsConstant = true;
             if ((realnumber - (long)realnumber) == 0)
@@ -55,7 +55,7 @@ namespace ExprCore.Types
             Reduce();
         }
 
-        public Number(long numerator, long denomiator)
+        public Fraction(long numerator, long denomiator)
         {
             Initialize(numerator, denomiator);
             IsConstant = true;
@@ -85,7 +85,7 @@ namespace ExprCore.Types
             return (double)numerator / denomiator;
         }
 
-        public Number Reduce()
+        public Fraction Reduce()
         {
             long k = MathHelper.GCD(Math.Abs(numerator), Math.Abs(denomiator));
             numerator /= k;
@@ -102,7 +102,7 @@ namespace ExprCore.Types
 
         public override bool Equals(object obj)
         {
-            var number = obj as Number;
+            var number = obj as Fraction;
             return number != null &&
                    numerator == number.numerator &&
                    denomiator == number.denomiator;
@@ -133,95 +133,107 @@ namespace ExprCore.Types
             return base.IsAcceptable(type);
         }
 
-        public static implicit operator Number(double d)
+        public static implicit operator Fraction(double d)
         {
-            return new Number(d);
+            return new Fraction(d);
         }
 
         // Operators
-        public static Number Add(TokenType left, TokenType right)
+        public static Fraction Add(TokenType left, TokenType right)
         {
-            Number l = left as Number;
-            Number r = right as Number;
+            Fraction l = left as Fraction;
+            Fraction r = right as Fraction;
             long lcm = MathHelper.LCM(l.denomiator, r.denomiator);
-            return new Number(l.numerator * lcm / l.denomiator + r.numerator * lcm / r.denomiator, lcm).Reduce();
+            return new Fraction(l.numerator * lcm / l.denomiator + r.numerator * lcm / r.denomiator, lcm).Reduce();
         }
 
-        public static Number Subtract(TokenType left, TokenType right)
+        public static Fraction Subtract(TokenType left, TokenType right)
         {
-            Number l = left as Number;
-            Number r = right as Number;
+            Fraction l = left as Fraction;
+            Fraction r = right as Fraction;
             long lcm = MathHelper.LCM(l.denomiator, r.denomiator);
-            return new Number(l.numerator * lcm / l.denomiator - r.numerator * lcm / r.denomiator, lcm).Reduce();
+            return new Fraction(l.numerator * lcm / l.denomiator - r.numerator * lcm / r.denomiator, lcm).Reduce();
         }
 
-        public static Number Multiply(TokenType left, TokenType right)
+        public static Fraction Multiply(TokenType left, TokenType right)
         {
-            Number l = left as Number;
-            Number r = right as Number;
-            return new Number(l.numerator * r.numerator, l.denomiator * r.denomiator).Reduce();
+            Fraction l = left as Fraction;
+            Fraction r = right as Fraction;
+            return new Fraction(l.numerator * r.numerator, l.denomiator * r.denomiator).Reduce();
         }
 
-        public static Number Divide(TokenType left, TokenType right)
+        public static Fraction Divide(TokenType left, TokenType right)
         {
-            Number l = left as Number;
-            Number r = right as Number;
-            return new Number(l.numerator * r.denomiator, l.denomiator * r.numerator).Reduce();
+            Fraction l = left as Fraction;
+            Fraction r = right as Fraction;
+            return new Fraction(l.numerator * r.denomiator, l.denomiator * r.numerator).Reduce();
         }
 
-        public static Number Power(TokenType left, TokenType right)
+        public static Fraction Power(TokenType left, TokenType right)
         {
-            Number l = left as Number;
-            Number r = right as Number;
-            return new Number(Math.Pow(l.GetValue(), r.GetValue())).Reduce();
+            Fraction l = left as Fraction;
+            Fraction r = right as Fraction;
+            return new Fraction(Math.Pow(l.GetValue(), r.GetValue())).Reduce();
         }
 
-        public static Number Mod(TokenType left, TokenType right)
+        public static Fraction Mod(TokenType left, TokenType right)
         {
-            Number l = left as Number;
-            Number r = right as Number;
-            return new Number(l.GetValue() % r.GetValue()).Reduce();
+            Fraction l = left as Fraction;
+            Fraction r = right as Fraction;
+            return new Fraction(l.GetValue() % r.GetValue()).Reduce();
         }
 
-        public static Number Negative(TokenType operand)
+        public static Fraction Negative(TokenType operand)
         {
-            Number n = operand as Number;
-            return new Number(-n.numerator, n.denomiator);
+            Fraction n = operand as Fraction;
+            return new Fraction(-n.numerator, n.denomiator);
         }
 
         // Functions
-        private static void CheckIfBothInteger(Number p1, Number p2)
+        private static void CheckIfBothInteger(Fraction p1, Fraction p2)
         {
             if (!(p1.IsInteger() && p2.IsInteger()))
                 throw new ExprCoreException("정수에 대해서만 GCD연산이 가능합니다.");
         }
 
-        public static Number Gcd(List<TokenType> parameters)
+        public static Fraction Gcd(List<TokenType> parameters)
         {
-            Number p1 = parameters[0] as Number;
-            Number p2 = parameters[1] as Number;
+            Fraction p1 = parameters[0] as Fraction;
+            Fraction p2 = parameters[1] as Fraction;
             CheckIfBothInteger(p1, p2);
-            return new Number(MathHelper.GCD((long) p1.GetValue(), (long)p2.GetValue()));
+            return new Fraction(MathHelper.GCD((long) p1.GetValue(), (long)p2.GetValue()));
         }
 
-        public static Number Lcm(List<TokenType> parameters)
+        public static Fraction Lcm(List<TokenType> parameters)
         {
-            Number p1 = parameters[0] as Number;
-            Number p2 = parameters[1] as Number;
+            Fraction p1 = parameters[0] as Fraction;
+            Fraction p2 = parameters[1] as Fraction;
             CheckIfBothInteger(p1, p2);
-            return new Number(MathHelper.LCM((long)p1.GetValue(), (long)p2.GetValue()));
+            return new Fraction(MathHelper.LCM((long)p1.GetValue(), (long)p2.GetValue()));
         }
 
-        public static Number Reduce(List<TokenType> parameters)
+        public static Fraction Reduce(List<TokenType> parameters)
         {
-            Number p1 = parameters[0] as Number;
-            return new Number(p1).Reduce();
+            Fraction p1 = parameters[0] as Fraction;
+            return new Fraction(p1).Reduce();
+        }
+
+        public static Fraction Sqrt(List<TokenType> parameters)
+        {
+            Fraction p1 = parameters[0] as Fraction;
+            return new Fraction(Math.Sqrt(p1.GetValue()));
+        }
+
+        public static Fraction Abs(List<TokenType> parameters)
+        {
+            Fraction p1 = parameters[0] as Fraction;
+            return new Fraction(Math.Abs(p1.numerator), Math.Abs(p1.denomiator));
         }
 
         // Untility
-        public static Number Sqrt(Number n)
+        public static Fraction Sqrt(Fraction n)
         {
-            return new Number(Math.Sqrt(n.GetValue()));
+            return new Fraction(Math.Sqrt(n.GetValue()));
         }
     }
 }

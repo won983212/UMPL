@@ -98,9 +98,11 @@ namespace ExprCore.Functions
         static FunctionRegistry()
         {
             // Number
-            RegisterFunction("gcd", new Type[] { typeof(Number), typeof(Number) }, Number.Gcd);
-            RegisterFunction("lcm", new Type[] { typeof(Number), typeof(Number) }, Number.Lcm);
-            RegisterFunction("reduce", new Type[] { typeof(Number) }, Number.Reduce);
+            RegisterFunction("gcd", new Type[] { typeof(Fraction), typeof(Fraction) }, Fraction.Gcd);
+            RegisterFunction("lcm", new Type[] { typeof(Fraction), typeof(Fraction) }, Fraction.Lcm);
+            RegisterFunction("reduce", new Type[] { typeof(Fraction) }, Fraction.Reduce);
+            RegisterFunction("sqrt", new Type[] { typeof(Fraction) }, Fraction.Sqrt);
+            RegisterFunction("abs", new Type[] { typeof(Fraction) }, Fraction.Abs);
 
             // Vector
             RegisterFunction("length", new Type[] { typeof(Vector) }, Vector.Length);

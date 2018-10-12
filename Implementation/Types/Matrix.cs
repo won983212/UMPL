@@ -107,7 +107,7 @@ namespace ExprCore.Types
             return hashCode;
         }
 
-        public override TokenType Evaluate(Dictionary<Variable, Number> var_values)
+        public override TokenType Evaluate(Dictionary<Variable, Fraction> var_values)
         {
             List<TokenType> datas = new List<TokenType>();
             for (int i = 0; i < rows; i++)
@@ -136,8 +136,8 @@ namespace ExprCore.Types
                 {
                     TokenType lParam = l.data[i, j];
                     TokenType rParam = r.data[i, j];
-                    if (lParam is Number && rParam is Number)
-                        ret.data[i, j] = negative ? Number.Subtract(lParam, rParam) : Number.Add(lParam, rParam);
+                    if (lParam is Fraction && rParam is Fraction)
+                        ret.data[i, j] = negative ? Fraction.Subtract(lParam, rParam) : Fraction.Add(lParam, rParam);
                     else
                         throw new ExprCoreException("상수인 행렬만 더할 수 있습니다.");
                 }
@@ -169,13 +169,13 @@ namespace ExprCore.Types
             {
                 for (int j = 0; j < r.columns; j++)
                 {
-                    Number sum = 0;
+                    Fraction sum = 0;
                     for (int k = 0; k < l.columns; k++)
                     {
                         TokenType lParam = l.data[i, k];
                         TokenType rParam = r.data[k, j];
-                        if (lParam is Number && rParam is Number)
-                            sum = Number.Add(sum, Number.Multiply(lParam, rParam));
+                        if (lParam is Fraction && rParam is Fraction)
+                            sum = Fraction.Add(sum, Fraction.Multiply(lParam, rParam));
                         else
                             throw new ExprCoreException("상수인 행렬만 곱할 수 있습니다.");
                     }
@@ -188,7 +188,7 @@ namespace ExprCore.Types
 
         public static Matrix Scala(TokenType left, TokenType right)
         {
-            Number l = left as Number;
+            Fraction l = left as Fraction;
             Matrix r = right as Matrix;
             Matrix ret = new Matrix(r.rows, r.columns);
 
@@ -196,8 +196,8 @@ namespace ExprCore.Types
             {
                 for (int j = 0; j < r.columns; j++)
                 {
-                    if (r.data[i, j] is Number)
-                        ret.data[i, j] = Number.Multiply(l, r.data[i, j]);
+                    if (r.data[i, j] is Fraction)
+                        ret.data[i, j] = Fraction.Multiply(l, r.data[i, j]);
                     else
                         throw new ExprCoreException("상수인 행렬만 스칼라 곱연산을 할 수 있습니다.");
                 }
@@ -219,10 +219,10 @@ namespace ExprCore.Types
                 throw new ExprCoreException("정방행렬이 아닙니다.");
         }
 
-        private static void ScalaAdd(Matrix m, int src, int dst, Number s)
+        private static void ScalaAdd(Matrix m, int src, int dst, Fraction s)
         {
             for (int i = 0; i < m.columns; i++)
-                m.data[dst, i] = Number.Add(m.data[dst, i], Number.Multiply(s, m.data[src, i]));
+                m.data[dst, i] = Fraction.Add(m.data[dst, i], Fraction.Multiply(s, m.data[src, i]));
         }
 
         private static void Switching(Matrix m, int r1, int r2)
@@ -235,10 +235,10 @@ namespace ExprCore.Types
             }
         }
 
-        private static void ScalaRow(Matrix m, int r, Number s)
+        private static void ScalaRow(Matrix m, int r, Fraction s)
         {
             for (int i = 0; i < m.columns; i++)
-                m.data[r, i] = Number.Multiply(m.data[r, i], s);
+                m.data[r, i] = Fraction.Multiply(m.data[r, i], s);
         }
 
         public static Matrix Gauss(List<TokenType> parameters)
@@ -259,7 +259,7 @@ namespace ExprCore.Types
             {
                 for (int i = r; i < m.rows; i++)
                 {
-                    if (((Number)m.data[i, c]).GetValue() != 0)
+                    if (((Fraction)m.data[i, c]).GetValue() != 0)
                     {
                         if (i != r) Switching(ret, i, r);
                         found = true;
@@ -275,11 +275,11 @@ namespace ExprCore.Types
                 }
                 else
                 {
-                    Number src = ret.data[r, c] as Number;
+                    Fraction src = ret.data[r, c] as Fraction;
                     for (int j = r + 1; j < m.rows; j++)
                     {
-                        Number val = ret.data[j, c] as Number;
-                        if (val.GetValue() != 0) ScalaAdd(ret, r, j, Number.Negative(Number.Divide(val, src)));
+                        Fraction val = ret.data[j, c] as Fraction;
+                        if (val.GetValue() != 0) ScalaAdd(ret, r, j, Fraction.Negative(Fraction.Divide(val, src)));
                     }
                 }
 
@@ -308,7 +308,7 @@ namespace ExprCore.Types
                 int swcnt = 0;
                 for (int i = r; i >= 0; i--)
                 {
-                    if (((Number)ret.data[i, c]).GetValue() != 0)
+                    if (((Fraction)ret.data[i, c]).GetValue() != 0)
                     {
                         if (i != r) Switching(ret, i, r);
                         swcnt++;
@@ -323,11 +323,11 @@ namespace ExprCore.Types
                 }
                 else
                 {
-                    Number src = ret.data[r, c] as Number;
+                    Fraction src = ret.data[r, c] as Fraction;
                     for (int j = r - 1; j >= 0; j--)
                     {
-                        Number val = ret.data[j, c] as Number;
-                        if (val.GetValue() != 0) ScalaAdd(ret, r, j, Number.Negative(Number.Divide(val, src)));
+                        Fraction val = ret.data[j, c] as Fraction;
+                        if (val.GetValue() != 0) ScalaAdd(ret, r, j, Fraction.Negative(Fraction.Divide(val, src)));
                     }
                 }
 
@@ -344,16 +344,16 @@ namespace ExprCore.Types
             return GaussTop(m, true);
         }
 
-        public static Number Det(List<TokenType> parameters)
+        public static Fraction Det(List<TokenType> parameters)
         {
             Matrix m = parameters[0] as Matrix;
             CheckNumbericMatrix(m);
             CheckSquareMatrix(m);
             m = GaussBot(m, true, true);
 
-            Number det = 1;
+            Fraction det = 1;
             for (int i = 0; i < m.rows; i++)
-                det = Number.Multiply(det, m.data[i, i]);
+                det = Fraction.Multiply(det, m.data[i, i]);
 
             return det;
         }
@@ -373,7 +373,7 @@ namespace ExprCore.Types
             return ret;
         }
 
-        public static Number Rank(List<TokenType> parameters)
+        public static Fraction Rank(List<TokenType> parameters)
         {
             Matrix m = parameters[0] as Matrix;
             CheckNumbericMatrix(m);
@@ -384,7 +384,7 @@ namespace ExprCore.Types
                 int c;
                 for (c = 0; c < m.columns; c++)
                 {
-                    if (((Number)m.data[r, c]).GetValue() != 0)
+                    if (((Fraction)m.data[r, c]).GetValue() != 0)
                         break;
                 }
                 if (c != m.columns)
@@ -407,16 +407,16 @@ namespace ExprCore.Types
                     mat.data[r, c] = m.data[r, c];
                 for (int c = m.columns; c < m.columns * 2; c++)
                     if(c == r + m.columns)
-                        mat.data[r, c] = new Number(1);
+                        mat.data[r, c] = new Fraction(1);
                     else
-                        mat.data[r, c] = new Number(0);
+                        mat.data[r, c] = new Fraction(0);
             }
 
             GaussBot(mat, false, false);
 
-            Number det = 1;
+            Fraction det = 1;
             for (int i = 0; i < mat.rows; i++)
-                det = Number.Multiply(det, mat.data[i, i]);
+                det = Fraction.Multiply(det, mat.data[i, i]);
 
             if (det.GetValue() == 0)
                 throw new ExprCoreException("행렬식이 0인 행렬은 inverse를 구할 수 없습니다.");
@@ -425,9 +425,9 @@ namespace ExprCore.Types
             {
                 for(int j = i - 1; j >= 0; j--)
                 {
-                    ScalaAdd(mat, i, j, Number.Negative(Number.Divide(mat.data[j, i], mat.data[i, i])));
+                    ScalaAdd(mat, i, j, Fraction.Negative(Fraction.Divide(mat.data[j, i], mat.data[i, i])));
                 }
-                ScalaRow(mat, i, Number.Divide(new Number(1), mat.data[i, i]));
+                ScalaRow(mat, i, Fraction.Divide(new Fraction(1), mat.data[i, i]));
             }
 
             Matrix ret = new Matrix(m.rows, m.columns);

@@ -12,35 +12,158 @@ using System.Windows.Media;
 
 namespace MathCalc.TypeRenderer
 {
+    class FormulaToken
+    {
+        public readonly int priority;
+        private List<FormulaElement> elements;
+
+        public FormulaToken(FormulaElement startElement)
+        {
+            priority = -1;
+            elements = new List<FormulaElement>() { startElement };
+        }
+
+        public FormulaToken(int priority, FormulaToken token1, FormulaToken token2, TextElement operatorElement)
+        {
+            this.priority = priority;
+            elements = new List<FormulaElement>();
+            elements.AddRange(token1.elements);
+            elements.Add(operatorElement);
+            elements.AddRange(token2.elements);
+        }
+
+        public void PutBracket()
+        {
+            elements = new List<FormulaElement>() { new BracketElement(ToFormulaElement()) };
+        }
+
+        public bool IsType(Type type)
+        {
+            if (elements.Count == 1)
+                return type.IsAssignableFrom(elements[0].GetType());
+            return type == typeof(SequenceElement);
+        }
+
+        public FormulaElement ToFormulaElement()
+        {
+            if (elements.Count == 1)
+                return elements[0];
+            else
+                return new SequenceElement(elements);
+        }
+    }
+
     static class ExprTreeVisualizer
     {
         public static readonly Typeface FormulaFont = new Typeface("Cambria Math");
-        public static void DrawTreeElements(DrawingContext ctx, double x, double y, double parents_width, double parents_height, List<TokenType> expr)
-        {
-            // Test
-            expr = ExpressionParser.Tokenize("2*a+4-7*(2+5-6)/3");
 
-            ConvertAsFormulaElement(expr, 14).Draw(ctx, x, y);
+        public static Size DrawTreeElements(DrawingContext ctx, double x, double y, int fontSize, TypeTree expr)
+        {
+            FormulaElement fe = ConvertAsFormulaElement(expr, fontSize);
+            Size size = new Size(fe.Width, fe.Height);
+            fe.Draw(ctx, x, y);
+            return size;
         }
 
-        private static FormulaElement ConvertAsFormulaElement(List<TokenType> types, int size)
+        // X/Y -> fraction
+        // X^Y -> power
+
+        // func(X, Y,...) -> text + CommaBracket
+        // matr_c -> matrix
+        // vector -> CommaBracket
+        // X -> text
+
+        // expr * expr -> \bullet
+        // vec * vec -> \bullet
+        // vec3 @ vec3 -> \multiple
+        // mat * mat -> \multiple
+        
+        // sqrt(X) -> sqrt symbol
+        // abs(X) -> |X|
+        private static FormulaElement ConvertAsFormulaElement(TypeTree expr, int size)
         {
-            List<FormulaElement> elements = new List<FormulaElement>();
-            elements.Add(new PowerElement(new FractionElement(new TextElement("1", size), new TextElement("3", size)), new TextElement("21", size)));
-            elements.Add(new TextElement("+", size));
-            elements.Add(new TextElement("10", size));
+            return expr.ProcessCalculate(
+            (op, e1, e2) =>
+            {
+                if(op.op == '/')
+                    return new FormulaToken(new FractionElement(e1.ToFormulaElement(), e2.ToFormulaElement()));
+                else if(op.op == '^')
+                    return new FormulaToken(new PowerElement(e1.ToFormulaElement(), e2.ToFormulaElement()));
+                else
+                {
+                    if (e1.priority != -1 && e1.priority < op.priority)
+                        e1.PutBracket();
+                    if (e2.priority != -1 && (e2.priority < op.priority || (e2.priority == op.priority && op.op == '-')))
+                        e2.PutBracket();
 
-            FormulaElement[] fels = new FormulaElement[4];
-            fels[0] = new TextElement("3", size);
-            fels[1] = new TextElement("3", size);
-            fels[2] = new TextElement("41", size);
-            fels[3] = new FractionElement(new TextElement("12", size), new TextElement("21", size));
-            double[] rows = new double[] { Math.Max(fels[0].Height, fels[1].Height), Math.Max(fels[2].Height, fels[3].Height) };
-            double[] columns = new double[] { Math.Max(fels[0].Width, fels[2].Width), Math.Max(fels[1].Width, fels[3].Width) };
+                    string opText = op.ToString();
+                    if (op.op == '*')
+                        if (e1.IsType(typeof(MatrixElement)) && e2.IsType(typeof(MatrixElement)))
+                            opText = "×";
+                        else
+                            opText = "·";
 
-            MatrixElement el = new MatrixElement(rows, columns, fels);
+                    return new FormulaToken(op.priority, e1, e2, new TextElement(opText, size));
+                }
+            },
+            (node) =>
+            {
+                return new FormulaToken(CreateFormulaElement(node, size));
+            }).ToFormulaElement();
+        }
 
-            return new SequenceElement(new List<FormulaElement>() { new PowerElement(new TextElement("sin", size), new TextElement("-1", size)), new BracketElement(new FractionElement(new TextElement("1", size), new TextElement("2", size))) });
+        private static FormulaElement CreateFormulaElement(TokenType type, int size)
+        {
+            int i = 0;
+            if(type is ExprCore.Types.Expression expr)
+            {
+                return ConvertAsFormulaElement(expr.ExprTree, size);
+            }
+            else if(type is Function func)
+            {
+                if (func.funcName == "sqrt")
+                    return new SquareRootElement(CreateFormulaElement(func.parameters[0], size));
+                else if (func.funcName == "abs")
+                    return new AbsoluteElement(CreateFormulaElement(func.parameters[0], size));
+                else
+                {
+                    FormulaElement[] parameters = new FormulaElement[func.parameters.Count];
+                    foreach (TokenType t in func.parameters)
+                    {
+                        parameters[i++] = CreateFormulaElement(t, size);
+                    }
+                    return new SequenceElement(new List<FormulaElement>() { new TextElement(func.funcName, size), new CommaBracketElement(parameters) });
+                }
+            }
+            else if(type is ExprCore.Types.Matrix mat)
+            {
+                double[] rowmax = new double[mat.rows];
+                double[] colmax = new double[mat.columns];
+                FormulaElement[] elements = new FormulaElement[mat.rows * mat.columns];
+                for(int r = 0; r < mat.rows; r++)
+                {
+                    for(int c = 0; c < mat.columns; c++)
+                    {
+                        elements[i] = CreateFormulaElement(mat.data[r, c], size);
+                        rowmax[r] = Math.Max(rowmax[r], elements[i].Height);
+                        colmax[c] = Math.Max(colmax[c], elements[i].Width);
+                    }
+                }
+                return new MatrixElement(rowmax, colmax, elements);
+            }
+            else if(type is ExprCore.Types.Vector vec)
+            {
+                FormulaElement[] elements = new FormulaElement[vec.vecData.Length];
+                foreach (TokenType t in vec.vecData)
+                {
+                    elements[i++] = CreateFormulaElement(t, size);
+                }
+                return new CommaBracketElement(elements);
+            }
+            else
+            {
+                return new TextElement(type.ToString(), size);
+            }
         }
     }
 }

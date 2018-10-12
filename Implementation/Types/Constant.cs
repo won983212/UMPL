@@ -34,7 +34,7 @@ namespace ExprCore.Types
             return label;
         }
 
-        public override TokenType Evaluate(Dictionary<Variable, Number> var_values)
+        public override TokenType Evaluate(Dictionary<Variable, Fraction> var_values)
         {
             return value.Evaluate(var_values);
         }

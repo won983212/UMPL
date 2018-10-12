@@ -58,13 +58,16 @@
     </ApplicationDefinition>
     <Compile Include="ExpressionViewer.cs" />
     <Compile Include="TreeViewer.cs" />
+    <Compile Include="TypeRenderer\AbsoluteElement.cs" />
     <Compile Include="TypeRenderer\BracketElement.cs" />
+    <Compile Include="TypeRenderer\CommaBracketElement.cs" />
     <Compile Include="TypeRenderer\ExprTreeVisualizer.cs" />
     <Compile Include="TypeRenderer\FormulaElement.cs" />
     <Compile Include="TypeRenderer\FractionElement.cs" />
     <Compile Include="TypeRenderer\MatrixElement.cs" />
     <Compile Include="TypeRenderer\PowerElement.cs" />
     <Compile Include="TypeRenderer\SequenceElement.cs" />
+    <Compile Include="TypeRenderer\SquareRootElement.cs" />
     <Compile Include="TypeRenderer\TextElement.cs" />
     <Compile Include="WpfTreeRenderContext.cs" />
     <Page Include="MainWindow.xaml">

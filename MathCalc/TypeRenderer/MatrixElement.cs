@@ -36,13 +36,13 @@ namespace MathCalc.TypeRenderer
             double y = 0;
             int i = 0;
 
-            ctx.DrawLine(LineColor, new Point(0, 0), new Point(0, Height));
-            ctx.DrawLine(LineColor, new Point(0, 0), new Point(3, 0));
-            ctx.DrawLine(LineColor, new Point(0, Height), new Point(3, Height));
+            ctx.DrawLine(LinePen, new Point(0, 0), new Point(0, Height));
+            ctx.DrawLine(LinePen, new Point(0, 0), new Point(3, 0));
+            ctx.DrawLine(LinePen, new Point(0, Height), new Point(3, Height));
 
-            ctx.DrawLine(LineColor, new Point(Width, 0), new Point(Width, Height));
-            ctx.DrawLine(LineColor, new Point(Width - 3, 0), new Point(Width, 0));
-            ctx.DrawLine(LineColor, new Point(Width - 3, Height), new Point(Width, Height));
+            ctx.DrawLine(LinePen, new Point(Width, 0), new Point(Width, Height));
+            ctx.DrawLine(LinePen, new Point(Width - 3, 0), new Point(Width, 0));
+            ctx.DrawLine(LinePen, new Point(Width - 3, Height), new Point(Width, Height));
 
             for (int r = 0; r < rowMax.Length; r++)
             {

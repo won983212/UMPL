@@ -16,7 +16,7 @@ namespace ExprCore.Types
         }
 
         // 해당 타입을 주어진 변수에 대하여 풀었을 때의 값
-        public virtual TokenType Evaluate(Dictionary<Variable, Number> var_values)
+        public virtual TokenType Evaluate(Dictionary<Variable, Fraction> var_values)
         {
             return this;
         }

@@ -9,14 +9,14 @@ namespace MathCalc.TypeRenderer
 {
     abstract class FormulaElement
     {
-        public static readonly Pen LineColor = new Pen(Brushes.Black, 1);
+        public static readonly Pen LinePen = new Pen(Brushes.Black, 1);
         public static readonly Brush Foreground = Brushes.Black;
         public double Width;
         public double Height;
 
         static FormulaElement()
         {
-            LineColor.Freeze();
+            LinePen.Freeze();
         }
 
         public abstract void Draw(DrawingContext ctx);

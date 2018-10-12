@@ -26,7 +26,7 @@ namespace MathCalc.TypeRenderer
             double y = numerator.Height + 1;
 
             numerator.Draw(ctx, (Width - numerator.Width) / 2, 0);
-            ctx.DrawLine(LineColor, new Point(0, y), new Point(Width, y));
+            ctx.DrawLine(LinePen, new Point(0, y), new Point(Width, y));
             denominator.Draw(ctx, (Width - denominator.Width) / 2, y + 3);
         }
     }

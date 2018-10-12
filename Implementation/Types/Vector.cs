@@ -7,7 +7,7 @@ namespace ExprCore.Types
 {
     class Vector : TokenType
     {
-        protected TokenType[] vecData;
+        public readonly TokenType[] vecData;
 
         protected Vector(TokenType[] data)
         {
@@ -59,7 +59,7 @@ namespace ExprCore.Types
         {
             for (int i = 0; i < vecData.Length; i++)
             {
-                if (vecData[i] is Number == false)
+                if (vecData[i] is Fraction == false)
                 {
                     return false;
                 }
@@ -79,26 +79,26 @@ namespace ExprCore.Types
                 throw new ExprCoreException("벡터가 상수가 아닙니다.");
         }
 
-        public static Number Length(List<TokenType> parameters)
+        public static Fraction Length(List<TokenType> parameters)
         {
             Vector v = parameters[0] as Vector;
             CheckNumber(v);
 
             if(v is Vec2 vec2)
-                return Number.Sqrt(Number.Add(Number.Multiply(vec2.X, vec2.X), Number.Multiply(vec2.Y, vec2.Y)));
+                return Fraction.Sqrt(Fraction.Add(Fraction.Multiply(vec2.X, vec2.X), Fraction.Multiply(vec2.Y, vec2.Y)));
             if(v is Vec3 vec3)
-                return Number.Sqrt(Number.Add(Number.Add(Number.Multiply(vec3.X, vec3.X), Number.Multiply(vec3.Y, vec3.Y)), Number.Multiply(vec3.Z, vec3.Z)));
+                return Fraction.Sqrt(Fraction.Add(Fraction.Add(Fraction.Multiply(vec3.X, vec3.X), Fraction.Multiply(vec3.Y, vec3.Y)), Fraction.Multiply(vec3.Z, vec3.Z)));
             return null;
         }
 
         public static Vector Normalize(List<TokenType> parameters)
         {
             Vector v = parameters[0] as Vector;
-            Number len = Length(parameters);
+            Fraction len = Length(parameters);
             if (v is Vec2 vec2)
-                return new Vec2(Number.Divide(vec2.X, len), Number.Divide(vec2.Y, len));
+                return new Vec2(Fraction.Divide(vec2.X, len), Fraction.Divide(vec2.Y, len));
             if (v is Vec3 vec3)
-                return new Vec3(Number.Divide(vec3.X, len), Number.Divide(vec3.Y, len), Number.Divide(vec3.Z, len));
+                return new Vec3(Fraction.Divide(vec3.X, len), Fraction.Divide(vec3.Y, len), Fraction.Divide(vec3.Z, len));
             return null;
         }
     }

@@ -60,7 +60,7 @@ namespace ExprCore
             Stack<UnaryOperatorWrapper> stack = new Stack<UnaryOperatorWrapper>();
             UnaryOperatorWrapper unary;
 
-            stack.Push(new UnaryOperatorWrapper(0, null));
+            stack.Push(new UnaryOperatorWrapper(-1, null));
             foreach (TokenType t in tokens)
             {
                 unary = stack.Peek();
@@ -101,7 +101,6 @@ namespace ExprCore
             while(stack.Count > 1)
             {
                 unary = stack.Pop();
-                unary.Wrap();
                 stack.Peek().temp_tokens.Add(unary.Wrap());
             }
 

@@ -155,6 +155,14 @@ namespace MathCalc.TypeRenderer
                 else
                     return new FractionElement(n, d);
             }
+            else if(type is UnaryOperatorWrapper unary)
+            {
+                FormulaElement innerElement = CreateFormulaElement(unary.token, size);
+                FormulaElement wrapper = innerElement;
+                if (unary.token is ExprCore.Types.Expression)
+                    wrapper = new BracketElement(innerElement);
+                return new SequenceElement(new List<FormulaElement>() { new TextElement(unary.operation.ToString(), size), wrapper });
+            }
             else
             {
                 return new TextElement(type.ToString(), size);

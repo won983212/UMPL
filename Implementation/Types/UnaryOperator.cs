@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ExprCore.Exceptions;
+using ExprCore.Operators;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -25,6 +27,8 @@ namespace ExprCore.Types
         {
             if (temp_tokens.Count == 1)
                 token = temp_tokens[0];
+            else if (temp_tokens.Count == 0)
+                throw new ExprCoreException("단항연산자 " + operation + "뒤에 피연산자가 없습니다.");
             else
                 token = ExpressionParser.ParseExpression(temp_tokens);
 
@@ -36,7 +40,7 @@ namespace ExprCore.Types
 
         public override TokenType Evaluate(Dictionary<Variable, Fraction> var_values)
         {
-            return token.Evaluate(var_values);
+            return OperatorRegistry.ExecuteUnaryOperation(operation, token.Evaluate(var_values));
         }
 
         public override bool IsAcceptable(Type type)
@@ -46,6 +50,8 @@ namespace ExprCore.Types
 
         public override string ToString()
         {
+            if(token is Expression)
+                return operation.op + "(" + token.ToString() + ")";
             return operation.op + token.ToString();
         }
 

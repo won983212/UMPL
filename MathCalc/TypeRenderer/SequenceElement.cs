@@ -9,7 +9,7 @@ namespace MathCalc.TypeRenderer
 {
     class SequenceElement : FormulaElement
     {
-        public const double Gap = 3;
+        public const double Gap = 1;
         private readonly List<FormulaElement> elements;
 
         public SequenceElement(List<FormulaElement> elements) : base()

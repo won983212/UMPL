@@ -10,24 +10,27 @@ namespace MathCalc.TypeRenderer
 {
     class MatrixElement : FormulaElement
     {
-        public const double ElementGap = 5;
-        private readonly double[] rowMax;
-        private readonly double[] columnMax;
+        public const double ElementGap = 3;
+        public const double BracketWidth = 3;
+        private readonly double rowHeight;
+        private readonly double columnWidth;
+        private readonly int rows;
+        private readonly int columns;
         private readonly FormulaElement[] elements;
 
-        public MatrixElement(double[] rowMax, double[] columnMax, FormulaElement[] elements)
+        public MatrixElement(double rowHeight, double columnWidth, int rows, int columns, FormulaElement[] elements)
         {
-            this.rowMax = rowMax;
-            this.columnMax = columnMax;
+            if (rowHeight > columnWidth)
+                columnWidth = rowHeight;
+
+            this.rowHeight = rowHeight;
+            this.columnWidth = columnWidth;
+            this.rows = rows;
+            this.columns = columns;
             this.elements = elements;
 
-            Width = (columnMax.Length + 1) * ElementGap;
-            Height = (rowMax.Length - 1) * ElementGap;
-
-            foreach (double value in columnMax)
-                Width += value;
-            foreach (double value in rowMax)
-                Height += value;
+            Width = (columns + 1) * ElementGap + columns * columnWidth + BracketWidth * 2;
+            Height = (rows - 1) * ElementGap + rows * rowHeight;
         }
 
         public override void Draw(DrawingContext ctx)
@@ -37,23 +40,23 @@ namespace MathCalc.TypeRenderer
             int i = 0;
 
             ctx.DrawLine(LinePen, new Point(0, 0), new Point(0, Height));
-            ctx.DrawLine(LinePen, new Point(0, 0), new Point(3, 0));
-            ctx.DrawLine(LinePen, new Point(0, Height), new Point(3, Height));
+            ctx.DrawLine(LinePen, new Point(0, 0), new Point(BracketWidth, 0));
+            ctx.DrawLine(LinePen, new Point(0, Height), new Point(BracketWidth, Height));
 
             ctx.DrawLine(LinePen, new Point(Width, 0), new Point(Width, Height));
-            ctx.DrawLine(LinePen, new Point(Width - 3, 0), new Point(Width, 0));
-            ctx.DrawLine(LinePen, new Point(Width - 3, Height), new Point(Width, Height));
+            ctx.DrawLine(LinePen, new Point(Width - BracketWidth, 0), new Point(Width, 0));
+            ctx.DrawLine(LinePen, new Point(Width - BracketWidth, Height), new Point(Width, Height));
 
-            for (int r = 0; r < rowMax.Length; r++)
+            for (int r = 0; r < rows; r++)
             {
-                x = ElementGap;
-                for(int c = 0; c < columnMax.Length; c++)
+                x = BracketWidth + ElementGap;
+                for(int c = 0; c < columns; c++)
                 {
                     FormulaElement element = elements[i++];
-                    element.Draw(ctx, x + (columnMax[c] - element.Width) / 2, y + (rowMax[r] - element.Height) / 2);
-                    x += columnMax[c] + ElementGap;
+                    element.Draw(ctx, x + (columnWidth - element.Width) / 2, y + (rowHeight - element.Height) / 2);
+                    x += columnWidth + ElementGap;
                 }
-                y += rowMax[r] + 5;
+                y += rowHeight + ElementGap;
             }
         }
     }

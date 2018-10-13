@@ -24,9 +24,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Types\Expression.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Types\Function.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Types\Matrix.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Types\Number.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\Fraction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Types\Operator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Types\TokenType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\UnaryOperator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Types\Variable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Types\Vec2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Types\Vec3.cs" />

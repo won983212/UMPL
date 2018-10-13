@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,6 +10,7 @@ namespace ExprCore.Types
                                                                   // +  -  *  /  %  ^  =  @  !  (  )  {  }  [  ]  ,  &  |
         private static readonly int[] OperatorPriority = new int[] { 3, 3, 4, 4, 2, 5, 1, 4, 5, 0, 0, 0, 0, 0, 0, 0, 4, 3 };
         private static readonly string Operators = "+-*/%^=@!(){}[],&|";
+        private static readonly string UnaryOperators = "-!";
         public readonly char op;
         public readonly int priority;
 
@@ -32,6 +34,11 @@ namespace ExprCore.Types
         public override string ToString()
         {
             return op.ToString();
+        }
+
+        public static bool IsUnaryOperatorCharacter(char c)
+        {
+            return UnaryOperators.IndexOf(c) >= 0;
         }
 
         public static bool IsOperatorCharacter(char c)

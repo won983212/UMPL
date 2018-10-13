@@ -31,7 +31,6 @@ namespace MathCalc.TypeRenderer
         {
             BracketElement.DrawBracket(ctx, 0, 0, Height, true);
             BracketElement.DrawBracket(ctx, Width - BracketElement.CloseBracketWidth, 0, Height, false);
-            ctx.DrawRectangle(Brushes.Transparent, LinePen, new Rect(0, 0, Width, Height));
 
             double x = 0;
             for(int i = 0; i < elements.Length; i++)

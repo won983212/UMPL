@@ -46,14 +46,16 @@ namespace ExprCore.Operators
 
         public static TokenType ExecuteBinaryOperation(Operator op, TokenType param1, TokenType param2)
         {
-            BinaryOperatorDef def = new BinaryOperatorDef(param1.GetType(), op, param2.GetType());
+            Type pType1 = param1.GetType();
+            Type pType2 = param2.GetType();
+            BinaryOperatorDef def = new BinaryOperatorDef(pType1, op, pType2);
             if (binary_operators.ContainsKey(def))
             {
                 return binary_operators[def].func(param1, param2);
             }
             else
             {
-                def = new BinaryOperatorDef(param2.GetType(), op, param1.GetType());
+                def = new BinaryOperatorDef(pType2, op, pType1);
                 if (binary_operators.ContainsKey(def))
                 {
                     OperationData<BinaryOperateFunc> data = binary_operators[def];
@@ -64,18 +66,19 @@ namespace ExprCore.Operators
                 }
             }
 
-            throw new ExprCoreException("인식할 수 없는 연산자입니다. [" + op + "]");
+            throw new ExprCoreException("인식할 수 없는 연산자입니다. (" + pType1.Name + ") " + op + " (" + pType2.Name + ")");
         }
 
         public static TokenType ExecuteUnaryOperation(Operator op, TokenType param)
         {
-            UnaryOperatorDef def = new UnaryOperatorDef(op, param.GetType());
+            Type pType = param.GetType();
+            UnaryOperatorDef def = new UnaryOperatorDef(op, pType);
             if (unary_operators.ContainsKey(def))
             {
                 return unary_operators[def].func(param);
             }
 
-            throw new ExprCoreException("인식할 수 없는 연산자입니다. [" + op + "]");
+            throw new ExprCoreException("인식할 수 없는 연산자입니다. " + op + "(" + pType.Name + ")");
         }
 
         static OperatorRegistry()

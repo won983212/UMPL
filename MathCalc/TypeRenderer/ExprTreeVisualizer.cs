@@ -57,29 +57,14 @@ namespace MathCalc.TypeRenderer
     {
         public static readonly Typeface FormulaFont = new Typeface("Cambria Math");
 
-        public static Size DrawTreeElements(DrawingContext ctx, double x, double y, int fontSize, TypeTree expr)
+        public static Size DrawElements(DrawingContext ctx, double x, double y, int fontSize, TokenType type)
         {
-            FormulaElement fe = ConvertAsFormulaElement(expr, fontSize);
+            FormulaElement fe = CreateFormulaElement(type, fontSize);
             Size size = new Size(fe.Width, fe.Height);
             fe.Draw(ctx, x, y);
             return size;
         }
 
-        // X/Y -> fraction
-        // X^Y -> power
-
-        // func(X, Y,...) -> text + CommaBracket
-        // matr_c -> matrix
-        // vector -> CommaBracket
-        // X -> text
-
-        // expr * expr -> \bullet
-        // vec * vec -> \bullet
-        // vec3 @ vec3 -> \multiple
-        // mat * mat -> \multiple
-        
-        // sqrt(X) -> sqrt symbol
-        // abs(X) -> |X|
         private static FormulaElement ConvertAsFormulaElement(TypeTree expr, int size)
         {
             return expr.ProcessCalculate(
@@ -137,19 +122,20 @@ namespace MathCalc.TypeRenderer
             }
             else if(type is ExprCore.Types.Matrix mat)
             {
-                double[] rowmax = new double[mat.rows];
-                double[] colmax = new double[mat.columns];
+                double rowMax = 0;
+                double columnMax = 0;
                 FormulaElement[] elements = new FormulaElement[mat.rows * mat.columns];
                 for(int r = 0; r < mat.rows; r++)
                 {
                     for(int c = 0; c < mat.columns; c++)
                     {
                         elements[i] = CreateFormulaElement(mat.data[r, c], size);
-                        rowmax[r] = Math.Max(rowmax[r], elements[i].Height);
-                        colmax[c] = Math.Max(colmax[c], elements[i].Width);
+                        rowMax = Math.Max(rowMax, elements[i].Height);
+                        columnMax = Math.Max(columnMax, elements[i].Width);
+                        i++;
                     }
                 }
-                return new MatrixElement(rowmax, colmax, elements);
+                return new MatrixElement(rowMax, columnMax, mat.rows, mat.columns, elements);
             }
             else if(type is ExprCore.Types.Vector vec)
             {
@@ -159,6 +145,15 @@ namespace MathCalc.TypeRenderer
                     elements[i++] = CreateFormulaElement(t, size);
                 }
                 return new CommaBracketElement(elements);
+            }
+            else if(type is Fraction frac)
+            {
+                FormulaElement n = new TextElement(frac.numerator.ToString(), size);
+                FormulaElement d = new TextElement(frac.denomiator.ToString(), size);
+                if (frac.denomiator == 1)
+                    return n;
+                else
+                    return new FractionElement(n, d);
             }
             else
             {

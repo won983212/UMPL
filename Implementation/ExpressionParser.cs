@@ -1,4 +1,5 @@
 ﻿using ExprCore.Exceptions;
+using ExprCore.Operators;
 using ExprCore.Types;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace ExprCore
             if (tokenizedTokens.Count == 0)
                 throw new ExprCoreException("식이 비어있습니다.");
 
-            List<TokenType> postfix_expr = ConvertToPostfix(tokenizedTokens);
+            List<TokenType> postfix_expr = ConvertToPostfix(WrapUnaryOperators(tokenizedTokens));
             Stack<Node> stack = new Stack<Node>();
             bool isConst = true;
 
@@ -49,6 +50,62 @@ namespace ExprCore
                 throw new ExprCoreException("식이 잘못되었습니다.");
 
             return new Expression(new TypeTree(tokenizedTokens, stack.Pop()), isConst);
+        }
+
+        // unary operator 앞엔 아무것도 없거나 || operator만 존재가능함
+        // 바로 뒤의 element와 붙는다. 다만 괄호가 있다면 괄호안의 elements들과 붙는다.
+        private static List<TokenType> WrapUnaryOperators(List<TokenType> tokens)
+        {
+            TokenType prev = null;
+            Stack<UnaryOperatorWrapper> stack = new Stack<UnaryOperatorWrapper>();
+            UnaryOperatorWrapper unary;
+
+            stack.Push(new UnaryOperatorWrapper(0, null));
+            foreach (TokenType t in tokens)
+            {
+                unary = stack.Peek();
+
+                if (t is Operator oper)
+                {
+                    if (Operator.IsUnaryOperatorCharacter(oper.op) && (prev == null || prev is Operator prevOp && prevOp.op != ')'))
+                    {
+                        stack.Push(new UnaryOperatorWrapper(oper));
+                        prev = t;
+                        continue;
+                    }
+
+                    if (stack.Count > 1)
+                    {
+                        if (oper.op == '(')
+                        {
+                            unary.depth++;
+                        }
+                        else if (oper.op == ')')
+                        {
+                            if (unary.depth > 0)
+                                unary.depth--;
+                        }
+                    }
+                }
+
+                unary.temp_tokens.Add(t);
+                if (unary.depth == 0)
+                {
+                    unary = stack.Pop();
+                    stack.Peek().temp_tokens.Add(unary.Wrap());
+                }
+
+                prev = t;
+            }
+
+            while(stack.Count > 1)
+            {
+                unary = stack.Pop();
+                unary.Wrap();
+                stack.Peek().temp_tokens.Add(unary.Wrap());
+            }
+
+            return stack.Pop().temp_tokens;
         }
 
         private static List<TokenType> ConvertToPostfix(List<TokenType> tokenizedTokens)
@@ -102,7 +159,7 @@ namespace ExprCore
 
         private static void FlushTokenBuffer(List<TokenType> parameterBuffer, List<TokenType> tokenBuffer)
         {
-            if(tokenBuffer.Count == 1)
+            if (tokenBuffer.Count == 1)
                 parameterBuffer.Add(tokenBuffer[0]);
             else
                 parameterBuffer.Add(ParseExpression(ParseComplex(tokenBuffer)));
@@ -263,7 +320,7 @@ namespace ExprCore
                 }
                 else if (IsNumberElement(c))
                 {
-                    if(isDigitStart == null)
+                    if (isDigitStart == null)
                         isDigitStart = true;
                     buffer.Append(c);
                 }

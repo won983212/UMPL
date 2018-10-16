@@ -65,18 +65,12 @@ namespace MathCalc
             CardListbox.ItemsSource = cards;
         }
 
-        private void Shutdown_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
-        }
-
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            TextBox box = sender as TextBox;
             if(e.Key == Key.Enter)
             {
-                cards.Add(new ExprElement(box.Text));
-                box.Text = "";
+                cards.Add(new ExprElement(InputTextBox.Text));
+                InputTextBox.Text = "";
                 ScrollViewer.ScrollToEnd();
             }
         }
@@ -86,7 +80,10 @@ namespace MathCalc
             ListBoxItem item = ItemsControl.ContainerFromElement(sender as ListBox, e.OriginalSource as DependencyObject) as ListBoxItem;
             if (item != null)
             {
-                
+                ExprElement element = item.DataContext as ExprElement;
+                InputTextBox.Text = element.PrevInput;
+                InputTextBox.CaretIndex = element.PrevInput.Length;
+                InputTextBox.ScrollToEnd();
             }
         }
     }

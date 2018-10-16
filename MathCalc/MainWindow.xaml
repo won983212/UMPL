@@ -6,19 +6,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MathCalc"
         mc:Ignorable="d"
+        WindowStyle="None"
+        ResizeMode="NoResize"
         Title="MathCalc" Height="450" Width="600">
-    <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="파일">
-                <MenuItem Header="끝내기" Click="Shutdown_Click"/>
-            </MenuItem>
-            <MenuItem Header="편집">
-                <MenuItem Header="행렬 삽입" />
-            </MenuItem>
-        </Menu>
-        <TextBox DockPanel.Dock="Bottom" Height="25" Margin="10" KeyDown="TextBox_KeyDown" />
+    <DockPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+        <TextBox x:Name="InputTextBox" DockPanel.Dock="Bottom" BorderBrush="Transparent" Height="35" FontSize="22" KeyDown="TextBox_KeyDown" />
         <ScrollViewer x:Name="ScrollViewer" VerticalScrollBarVisibility="Auto">
-            <ListBox x:Name="CardListbox" HorizontalContentAlignment="Stretch" PreviewMouseDoubleClick="CardListbox_MouseDoubleClick">
+            <ListBox x:Name="CardListbox" BorderBrush="Transparent" HorizontalContentAlignment="Stretch" PreviewMouseDoubleClick="CardListbox_MouseDoubleClick" Background="#FF1FA7CC">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}">
                         <Setter Property="Focusable" Value="False"/>
@@ -27,6 +21,9 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Border BorderThickness="1px" Margin="10" BorderBrush="Gray" UseLayoutRounding="True" SnapsToDevicePixels="True">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="3" RenderingBias="Quality" Opacity="0.3"/>
+                            </Border.Effect>
                             <StackPanel VerticalAlignment="Top" Background="White">
                                 <Label FontSize="14" FontWeight="Bold">Input</Label>
                                 <Separator />

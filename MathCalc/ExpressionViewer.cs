@@ -15,70 +15,66 @@ namespace MathCalc
 {
     class ExpressionViewer : FrameworkElement
     {
-        public static readonly DependencyProperty ExprTextProperty =
-                DependencyProperty.Register("ExprText", typeof(string), typeof(ExpressionViewer), new FrameworkPropertyMetadata(new PropertyChangedCallback(OnExprTextChanged)));
+        public static readonly DependencyProperty TargerViewProperty =
+                DependencyProperty.Register("TargetView", typeof(TokenType), typeof(ExpressionViewer), new FrameworkPropertyMetadata(new PropertyChangedCallback(OnViewChanged)));
+        public static readonly DependencyProperty TextSizeProperty =
+                DependencyProperty.Register("TextSize", typeof(int), typeof(ExpressionViewer), new FrameworkPropertyMetadata(14, new PropertyChangedCallback(OnViewChanged)));
         private static readonly Typeface font = new Typeface("맑은 고딕");
 
-        public string ExprText
+        public TokenType TargetView
         {
-            get { return (string)GetValue(ExprTextProperty); }
-            set { SetValue(ExprTextProperty, value); }
+            get { return (TokenType)GetValue(TargerViewProperty); }
+            set { SetValue(TargerViewProperty, value); }
+        }
+
+        public int TextSize
+        {
+            get { return (int)GetValue(TextSizeProperty); }
+            set { SetValue(TextSizeProperty, value); }
         }
 
         private DrawingGroup group = new DrawingGroup();
-        private ExprCore.Types.Expression input;
-        private TokenType target;
+        private Size size = new Size(0, 0);
 
-        private static void OnExprTextChanged(DependencyObject obj, DependencyPropertyChangedEventArgs arg)
+        private static void OnViewChanged(DependencyObject obj, DependencyPropertyChangedEventArgs arg)
         {
             ExpressionViewer t = obj as ExpressionViewer;
-            t.UpdateExpression(t.ExprText);
+            t.RenderDrawing();
         }
 
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
-            RenderDrawing(null);
+            RenderDrawing();
             drawingContext.DrawDrawing(group);
         }
 
-        public void UpdateExpression(string expr)
+        protected override Size MeasureOverride(Size availableSize)
         {
-            string warn = null;
-
-            try
-            {
-                input = ExpressionParser.ParseExpression(expr);
-                target = input.Evaluate();
-            }
-            catch (ExprCoreException e)
-            {
-                warn = e.Message;
-            }
-
-            RenderDrawing(warn);
+            return size;
         }
 
-        private void RenderDrawing(string warning)
+        private void RenderDrawing()
         {
             using (DrawingContext ctx = group.Open())
             {
-                if (warning != null)
-                {
-                    FormattedText warningText = new FormattedText(warning, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, font, 12, Brushes.Red, 1);
-                    ctx.DrawText(warningText, new Point(5, 0));
-                    ctx.PushTransform(new TranslateTransform(0, 20));
-                }
+                string warn = null;
 
-                if (input != null && target != null)
-                {
-                    double height = ExprTreeVisualizer.DrawElements(ctx, 10, 10, 14, input).Height;
-                    ExprTreeVisualizer.DrawElements(ctx, 10, 20 + height, 14, target);
-                }
+                if (TargetView == null)
+                    warn = "식이 비어있습니다.";
 
-                if (warning != null)
+                if (TargetView is ErrorTextTokenType error)
+                    warn = error.ErrorMessage;
+
+                if (warn != null)
                 {
-                    ctx.Pop();
+                    FormattedText warnText = new FormattedText(warn, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, font, TextSize, Brushes.Red, 1);
+                    ctx.DrawText(warnText, new Point(0, 0));
+                    size = new Size(warnText.Width, warnText.Height);
+                }
+                else
+                {
+                    size = ExprTreeVisualizer.DrawElements(ctx, 0, 0, TextSize, TargetView);
                 }
             }
         }

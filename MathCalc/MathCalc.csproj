@@ -59,6 +59,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DumpDataContext.cs" />
     <Compile Include="ErrorTextTokenType.cs" />
     <Compile Include="ExpressionViewer.cs" />
     <Compile Include="TreeViewer.cs" />

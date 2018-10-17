@@ -50,7 +50,7 @@ namespace MathCalc
 
             try
             {
-                this.expr = ExpressionParser.ParseExpression(expr).ExprTree;
+                this.expr = ((ExprCore.Types.Expression) ExpressionParser.ParseExpression(expr)).ExprTree;
             } 
             catch(ExprCoreException e)
             {

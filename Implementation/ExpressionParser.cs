@@ -9,7 +9,7 @@ namespace ExprCore
 {
     class ExpressionParser
     {
-        public static Expression ParseExpression(string expr)
+        public static TokenType ParseExpression(string expr)
         {
             if (expr.Length == 0)
                 throw new ExprCoreException("식이 비어있습니다.");
@@ -17,7 +17,7 @@ namespace ExprCore
             return ParseExpression(Tokenize(expr));
         }
 
-        public static Expression ParseExpression(List<TokenType> tokenizedTokens)
+        public static TokenType ParseExpression(List<TokenType> tokenizedTokens)
         {
             if (tokenizedTokens.Count == 0)
                 throw new ExprCoreException("식이 비어있습니다.");
@@ -25,6 +25,9 @@ namespace ExprCore
             List<TokenType> postfix_expr = ConvertToPostfix(WrapUnaryOperators(tokenizedTokens));
             Stack<Node> stack = new Stack<Node>();
             bool isConst = true;
+
+            if (postfix_expr.Count == 1)
+                return postfix_expr[0];
 
             foreach (TokenType t in postfix_expr)
             {

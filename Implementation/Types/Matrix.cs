@@ -287,7 +287,7 @@ namespace ExprCore.Types
             }
 
             if (neg && allowMulNeg)
-                ScalaRow(m, 0, -1);
+                ScalaRow(ret, 0, -1);
 
             return ret;
         }

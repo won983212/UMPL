@@ -103,6 +103,23 @@ namespace ExprCore.Functions
             RegisterFunction("reduce", new Type[] { typeof(Fraction) }, FractionFunctions.Reduce);
             RegisterFunction("sqrt", new Type[] { typeof(Fraction) }, FractionFunctions.Sqrt);
             RegisterFunction("abs", new Type[] { typeof(Fraction) }, FractionFunctions.Abs);
+            RegisterFunction("sin", new Type[] { typeof(Fraction) }, FractionFunctions.Sin);
+            RegisterFunction("cos", new Type[] { typeof(Fraction) }, FractionFunctions.Cos);
+            RegisterFunction("tan", new Type[] { typeof(Fraction) }, FractionFunctions.Tan);
+            RegisterFunction("asin", new Type[] { typeof(Fraction) }, FractionFunctions.Asin);
+            RegisterFunction("acos", new Type[] { typeof(Fraction) }, FractionFunctions.Acos);
+            RegisterFunction("atan", new Type[] { typeof(Fraction) }, FractionFunctions.Atan);
+            RegisterFunction("sinh", new Type[] { typeof(Fraction) }, FractionFunctions.Sinh);
+            RegisterFunction("cosh", new Type[] { typeof(Fraction) }, FractionFunctions.Cosh);
+            RegisterFunction("tanh", new Type[] { typeof(Fraction) }, FractionFunctions.Tanh);
+            RegisterFunction("ceil", new Type[] { typeof(Fraction) }, FractionFunctions.Ceil);
+            RegisterFunction("round", new Type[] { typeof(Fraction) }, FractionFunctions.Round);
+            RegisterFunction("floor", new Type[] { typeof(Fraction) }, FractionFunctions.Floor);
+            RegisterFunction("min", new Type[] { typeof(Fraction), typeof(Fraction) }, FractionFunctions.Min);
+            RegisterFunction("max", new Type[] { typeof(Fraction), typeof(Fraction) }, FractionFunctions.Max);
+            RegisterFunction("log", new Type[] { typeof(Fraction) }, FractionFunctions.Log);
+            RegisterFunction("log10", new Type[] { typeof(Fraction) }, FractionFunctions.Log10);
+            RegisterFunction("exp", new Type[] { typeof(Fraction) }, FractionFunctions.Exp);
 
             // Vector
             RegisterFunction("length", new Type[] { typeof(Vector) }, VectorFunctions.Length);

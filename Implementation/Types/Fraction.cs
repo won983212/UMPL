@@ -9,7 +9,7 @@ namespace ExprCore.Types
 {
     class Fraction : TokenType
     {
-        const double ERROR = 0.0000001;
+        const double ERROR = 0.000001;
         public long numerator;
         public long denomiator;
 
@@ -23,6 +23,11 @@ namespace ExprCore.Types
             if ((realnumber - (long)realnumber) == 0)
             {
                 Initialize((long)realnumber, 1);
+                return;
+            }
+            else if(realnumber < ERROR)
+            {
+                Initialize(0, 1);
                 return;
             }
 

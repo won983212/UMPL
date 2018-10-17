@@ -6,99 +6,114 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MathCalc"
         mc:Ignorable="d"
-        Title="MathCalc" Height="450" Width="500">
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Title="MathCalc" Height="500" Width="500">
     <Window.Resources>
         <local:DumpDataContext x:Key="TestDatas" />
+        <ContextMenu x:Key="ConfigMenu">
+            <MenuItem Header="모두 지우기" Click="Allclear_Cards"/>
+            <Separator/>
+            <MenuItem Header="변수 편집"/>
+            <MenuItem Header="행렬 삽입"/>
+        </ContextMenu>
     </Window.Resources>
-    <DockPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
-        <TextBox x:Name="InputTextBox" FontFamily="NanumGothic Light" DockPanel.Dock="Bottom" BorderBrush="Transparent" Height="35" FontSize="22" KeyDown="TextBox_KeyDown" />
-        <ScrollViewer x:Name="ScrollViewer" VerticalScrollBarVisibility="Auto">
-            <ListBox x:Name="CardListbox" BorderBrush="Transparent" HorizontalContentAlignment="Stretch" d:DataContext="{Binding Mode=OneWay, Source={StaticResource TestDatas}}" ItemsSource="{Binding Items}" PreviewMouseDoubleClick="CardListbox_MouseDoubleClick">
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListBoxItem}">
-                        <Setter Property="Focusable" Value="False"/>
-                        <Setter Property="LayoutTransform">
-                            <Setter.Value>
-                                <ScaleTransform />
-                            </Setter.Value>
-                        </Setter>
-                        <Style.Triggers>
-                            <EventTrigger RoutedEvent="Loaded">
-                                <EventTrigger.Actions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleY" From="0" Duration="0:0:.4">
-                                                <DoubleAnimation.EasingFunction>
-                                                    <BackEase Amplitude="0.3" EasingMode="EaseOut"/>
-                                                </DoubleAnimation.EasingFunction>
-                                            </DoubleAnimation>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger.Actions>
-                            </EventTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ListBox.ItemContainerStyle>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderThickness="1px" Margin="10" BorderBrush="Gray" UseLayoutRounding="True" SnapsToDevicePixels="True">
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="3" RenderingBias="Quality" Opacity="0.3"/>
-                            </Border.Effect>
-                            <Grid VerticalAlignment="Top" Background="White">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock FontSize="14" FontWeight="Bold" Width="70" HorizontalAlignment="Center" TextAlignment="Center" VerticalAlignment="Bottom">입력</TextBlock>
-                                <TextBlock FontSize="11" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="Gray" Text="{Binding InputType}" />
-                                <Rectangle Grid.Column="1" Grid.RowSpan="2" Width="1" Margin="0,5" Fill="Black" />
-                                <local:ExpressionViewer Grid.Column="2" Grid.RowSpan="2" VerticalAlignment="Center" TargetView="{Binding InputExpr}" Margin="15"/>
-                                
-                                <TextBlock FontSize="14" FontWeight="Bold" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Bottom">출력</TextBlock>
-                                <TextBlock FontSize="11" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="Gray" Text="{Binding OutputType}" />
-                                <Rectangle Grid.Column="1" Grid.Row="2" Grid.RowSpan="2" Width="1" Margin="0,5" Fill="Black" />
-                                <local:ExpressionViewer Grid.Row="2" Grid.Column="2" Grid.RowSpan="2" VerticalAlignment="Center" TargetView="{Binding Result}" Margin="15"/>
+    <Border BorderBrush="{StaticResource ThemeColor}" BorderThickness="1">
+        <DockPanel>
+            <Border BorderThickness="0,1,0,0" BorderBrush="Gray" DockPanel.Dock="Bottom">
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Width="55" Style="{StaticResource SimpleButton}" Click="OnConfigOpen">
+                        <Image Source="/resources/config.png" Width="25" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    </Button>
+                    <TextBox x:Name="InputTextBox" BorderThickness="0" Height="35" FontSize="22" FontWeight="Light" KeyDown="TextBox_KeyDown" />
+                </DockPanel>
+            </Border>
+            <DockPanel DockPanel.Dock="Top">
+                <Button Style="{StaticResource TitleBarButton}" DockPanel.Dock="Right" Click="OnClose" SnapsToDevicePixels="True">X</Button>
+                <Label Background="{StaticResource ThemeColor}" Padding="8" FontSize="14" Foreground="White" MouseLeftButtonDown="OnTitleBarDrag">Universal Mathematics Calculator</Label>
+            </DockPanel>
 
-                                <Rectangle Grid.ColumnSpan="3" Grid.Row="4" Height="1" Margin="10,5,10,0" Fill="Black" />
-                                <Expander Grid.ColumnSpan="3" Grid.Row="5" Margin="5" Header="자세히">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="*"/>
-                                        </Grid.RowDefinitions>
-                                        <Label HorizontalAlignment="Center">걸린시간</Label>
-                                        <Label HorizontalAlignment="Center" Grid.Row="1" FontSize="18" FontWeight="Light" Content="{Binding ExecutionTime}" />
+            <ScrollViewer x:Name="ScrollViewer" VerticalScrollBarVisibility="Auto" UseLayoutRounding="True" SnapsToDevicePixels="True">
+                <ListBox x:Name="CardListbox" ItemContainerStyle="{StaticResource AnimatedItem}" BorderThickness="0" HorizontalContentAlignment="Stretch" PreviewMouseDoubleClick="CardListbox_MouseDoubleClick" d:DataContext="{Binding Mode=OneWay, Source={StaticResource TestDatas}}" ItemsSource="{Binding Items}">
+                    <ListBox.Template>
+                        <ControlTemplate TargetType="ItemsControl">
+                            <Border Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+                                <ItemsPresenter />
+                            </Border>
+                        </ControlTemplate>
+                    </ListBox.Template>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderThickness="1px" Margin="10" BorderBrush="Gray" CornerRadius="3" Background="White">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="3" RenderingBias="Quality" Opacity="0.3"/>
+                                </Border.Effect>
+                                <Grid VerticalAlignment="Top">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Rectangle Grid.RowSpan="6" Fill="{Binding BorderBrush}" Width="5" />
 
-                                        <Label Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Center">제출시각</Label>
-                                        <Label HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" FontSize="18" FontWeight="Light" Content="{Binding TimeToExecute}" />
+                                    <TextBlock Grid.Column="1" FontSize="14" FontWeight="Bold" Width="70" HorizontalAlignment="Center" TextAlignment="Center" VerticalAlignment="Bottom">입력</TextBlock>
+                                    <TextBlock Grid.Column="1" FontSize="11" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="Gray" Text="{Binding InputType}" />
+                                    <Rectangle Grid.Column="2" Grid.RowSpan="2" Width="1" Margin="0,5" Fill="Black" />
+                                    <local:ExpressionViewer Grid.Column="3" Grid.RowSpan="2" VerticalAlignment="Center" TargetView="{Binding InputExpr}" Margin="15" UseLayoutRounding="False" SnapsToDevicePixels="False"/>
 
-                                        <Label Grid.Column="2" HorizontalAlignment="Center">기능</Label>
-                                        <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <Button>다시제출</Button>
-                                            <Button>제출된 식 복사</Button>
-                                        </StackPanel>
+                                    <TextBlock Grid.Column="1" FontSize="14" FontWeight="Bold" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Bottom">출력</TextBlock>
+                                    <TextBlock Grid.Column="1" FontSize="11" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="Gray" Text="{Binding OutputType}" />
+                                    <Rectangle Grid.Column="2" Grid.Row="2" Grid.RowSpan="2" Width="1" Margin="0,5" Fill="Black" />
+                                    <local:ExpressionViewer Grid.Row="2" Grid.Column="3" Grid.RowSpan="2" VerticalAlignment="Center" TargetView="{Binding Result}" Margin="15" UseLayoutRounding="False" SnapsToDevicePixels="False"/>
+
+                                    <Rectangle Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="4" Height="1" Margin="10,5,10,0" Fill="Black" />
+                                    <Grid Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="5" Margin="5">
+                                        <Expander Header="자세히">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <Label HorizontalAlignment="Center">걸린시간</Label>
+                                                <Label HorizontalAlignment="Center" Grid.Row="1" FontSize="18" FontWeight="Light" Content="{Binding ExecutionTime}" />
+
+                                                <Label Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Center">제출시각</Label>
+                                                <Label HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" FontSize="18" FontWeight="Light" Content="{Binding TimeToExecute}" />
+
+                                                <Label Grid.Column="2" HorizontalAlignment="Center">기능</Label>
+                                                <StackPanel Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <Button Style="{StaticResource SimpleButton}" Width="60" Height="25" Margin="3" Click="Item_ReExecute">다시제출</Button>
+                                                    <Button Style="{StaticResource SimpleButton}" Width="70" Height="25" Margin="3" Click="Item_LiveExecuteMode">실시간 제출</Button>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Expander>
+                                        <Button DockPanel.Dock="Right" Width="45" Height="25" Style="{StaticResource SimpleButton}" VerticalAlignment="Top" HorizontalAlignment="Right" Click="Item_Delete">삭제</Button>
                                     </Grid>
-                                </Expander>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </ScrollViewer>
-    </DockPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </ScrollViewer>
+        </DockPanel>
+    </Border>
 </Window>

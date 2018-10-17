@@ -98,24 +98,24 @@ namespace ExprCore.Functions
         static FunctionRegistry()
         {
             // Number
-            RegisterFunction("gcd", new Type[] { typeof(Fraction), typeof(Fraction) }, Fraction.Gcd);
-            RegisterFunction("lcm", new Type[] { typeof(Fraction), typeof(Fraction) }, Fraction.Lcm);
-            RegisterFunction("reduce", new Type[] { typeof(Fraction) }, Fraction.Reduce);
-            RegisterFunction("sqrt", new Type[] { typeof(Fraction) }, Fraction.Sqrt);
-            RegisterFunction("abs", new Type[] { typeof(Fraction) }, Fraction.Abs);
+            RegisterFunction("gcd", new Type[] { typeof(Fraction), typeof(Fraction) }, FractionFunctions.Gcd);
+            RegisterFunction("lcm", new Type[] { typeof(Fraction), typeof(Fraction) }, FractionFunctions.Lcm);
+            RegisterFunction("reduce", new Type[] { typeof(Fraction) }, FractionFunctions.Reduce);
+            RegisterFunction("sqrt", new Type[] { typeof(Fraction) }, FractionFunctions.Sqrt);
+            RegisterFunction("abs", new Type[] { typeof(Fraction) }, FractionFunctions.Abs);
 
             // Vector
-            RegisterFunction("length", new Type[] { typeof(Vector) }, Vector.Length);
-            RegisterFunction("norm", new Type[] { typeof(Vector) }, Vector.Normalize);
+            RegisterFunction("length", new Type[] { typeof(Vector) }, VectorFunctions.Length);
+            RegisterFunction("norm", new Type[] { typeof(Vector) }, VectorFunctions.Normalize);
 
             // Matrix
-            RegisterFunction("gaussbot", new Type[] { typeof(Matrix) }, Matrix.GaussBot);
-            RegisterFunction("gausstop", new Type[] { typeof(Matrix) }, Matrix.GaussTop);
-            RegisterFunction("gauss", new Type[] { typeof(Matrix) }, Matrix.Gauss);
-            RegisterFunction("det", new Type[] { typeof(Matrix) }, Matrix.Det);
-            RegisterFunction("trans", new Type[] { typeof(Matrix) }, Matrix.Transpose);
-            RegisterFunction("rank", new Type[] { typeof(Matrix) }, Matrix.Rank);
-            RegisterFunction("inv", new Type[] { typeof(Matrix) }, Matrix.Inverse);
+            RegisterFunction("gaussbot", new Type[] { typeof(Matrix) }, MatrixFunctions.GaussBot);
+            RegisterFunction("gausstop", new Type[] { typeof(Matrix) }, MatrixFunctions.GaussTop);
+            RegisterFunction("gauss", new Type[] { typeof(Matrix) }, MatrixFunctions.Gauss);
+            RegisterFunction("det", new Type[] { typeof(Matrix) }, MatrixFunctions.Det);
+            RegisterFunction("trans", new Type[] { typeof(Matrix) }, MatrixFunctions.Transpose);
+            RegisterFunction("rank", new Type[] { typeof(Matrix) }, MatrixFunctions.Rank);
+            RegisterFunction("inv", new Type[] { typeof(Matrix) }, MatrixFunctions.Inverse);
         }
     }
 }

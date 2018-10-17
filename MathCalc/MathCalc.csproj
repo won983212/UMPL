@@ -41,6 +41,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -66,6 +67,7 @@
     <Compile Include="TypeRenderer\AbsoluteElement.cs" />
     <Compile Include="TypeRenderer\BracketElement.cs" />
     <Compile Include="TypeRenderer\CommaBracketElement.cs" />
+    <Compile Include="ExprElement.cs" />
     <Compile Include="TypeRenderer\ExprTreeVisualizer.cs" />
     <Compile Include="TypeRenderer\FormulaElement.cs" />
     <Compile Include="TypeRenderer\FractionElement.cs" />
@@ -113,6 +115,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\config.png" />
   </ItemGroup>
   <Import Project="..\Implementation\Implementation.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

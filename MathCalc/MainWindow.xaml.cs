@@ -20,82 +20,6 @@ using System.Windows.Shapes;
 
 namespace MathCalc
 {
-    class ExprElement
-    {
-        public string PrevInput { get; private set; }
-        public string InputType { get; private set; }
-        public string OutputType { get; private set; }
-        public string TimeToExecute { get; private set; }
-        public string ExecutionTime { get; private set; }
-        public TokenType InputExpr { get; set; }
-        public TokenType Result { get; set; }
-
-        public ExprElement(string text)
-        {
-            PrevInput = text;
-            TimeToExecute = DateTime.Now.ToString("tt hh:mm:ss");
-            bool successIn = false;
-
-            Stopwatch stopwatch = Stopwatch.StartNew();
-
-            try
-            {
-                InputExpr = ExpressionParser.ParseExpression(text);
-                InputType = GetPrettyType(InputExpr);
-                successIn = true;
-            }
-            catch (ExprCoreException e)
-            {
-                InputExpr = new ErrorTextTokenType(e.Message);
-                Result = new ErrorTextTokenType("입력값에 오류가 있습니다.");
-                InputType = "Error";
-                OutputType = "Error";
-            }
-
-            if (successIn)
-            {
-                try
-                {
-                    Result = InputExpr.Evaluate(new Dictionary<Variable, Fraction>());
-                    OutputType = GetPrettyType(Result);
-                }
-                catch (ExprCoreException e)
-                {
-                    Result = new ErrorTextTokenType(e.Message);
-                    OutputType = "Error";
-                }
-            }
-
-            stopwatch.Stop();
-
-            long time = stopwatch.ElapsedMilliseconds;
-            ExecutionTime = time == 0 ? "매우 짧음" : (time + "ms");
-        }
-
-        private static string GetPrettyType(TokenType type)
-        {
-            if (type is Fraction)
-                return "수";
-            if (type is ExprCore.Types.Expression)
-                return "식";
-            if (type is ExprCore.Types.Matrix)
-                return "행렬";
-            if (type is Constant)
-                return "상수";
-            if (type is Function)
-                return "함수";
-            if (type is Operator)
-                return "연산자";
-            if (type is Variable)
-                return "변수";
-            if (type is Vec2)
-                return "2차원 벡터";
-            if (type is Vec3)
-                return "3차원 벡터";
-            return "알 수 없는 토큰";
-        }
-    }
-
     public partial class MainWindow : Window
     {
         private ObservableCollection<ExprElement> cards = new ObservableCollection<ExprElement>();
@@ -104,6 +28,7 @@ namespace MathCalc
         {
             InitializeComponent();
             CardListbox.ItemsSource = cards;
+            InputTextBox.Focus();
         }
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
@@ -126,6 +51,74 @@ namespace MathCalc
                 InputTextBox.CaretIndex = element.PrevInput.Length;
                 InputTextBox.ScrollToEnd();
             }
+        }
+
+        private void OnTitleBarDrag(object sender, MouseButtonEventArgs e)
+        {
+            MainWnd.DragMove();
+        }
+
+        private void OnClose(object sender, RoutedEventArgs e)
+        {
+            MainWnd.Close();
+        }
+
+        private void OnConfigOpen(object sender, RoutedEventArgs e)
+        {
+            ContextMenu menu = FindResource("ConfigMenu") as ContextMenu;
+            menu.PlacementTarget = sender as Button;
+            menu.IsOpen = true;
+        }
+
+        private void Item_Delete(object sender, RoutedEventArgs e)
+        {
+            Button bt = sender as Button;
+            if(bt.DataContext is ExprElement element)
+            {
+                element.MarkAsRemove(cards);
+            }
+        }
+
+        private void Item_ReExecute(object sender, RoutedEventArgs e)
+        {
+            Button bt = sender as Button;
+            if (bt.DataContext is ExprElement element)
+            {
+                cards.Add(new ExprElement(element.PrevInput));
+                ScrollViewer.ScrollToEnd();
+            }
+        }
+
+        private void Item_LiveExecuteMode(object sender, RoutedEventArgs e)
+        {
+            Button bt = sender as Button;
+            if (bt.DataContext is ExprElement element)
+            {
+                if(element.InputType == "Error")
+                {
+                    MessageBox.Show("입력에 오류있는 식을 대상으로 실시간 제출기능을 사용할 수 없습니다.", "에러", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    element.LiveExecute = !element.LiveExecute;
+                    if (element.LiveExecute)
+                    {
+                        element.BorderBrush = (Brush)FindResource("VariableColor");
+                    }
+                    else
+                    {
+                        if(element.OutputType == "Error")
+                            element.BorderBrush = (Brush)FindResource("ErrorColor");
+                        else
+                            element.BorderBrush = (Brush)FindResource("ThemeColor");
+                    }
+                }
+            }
+        }
+
+        private void Allclear_Cards(object sender, RoutedEventArgs e)
+        {
+            cards.Clear();
         }
     }
 }

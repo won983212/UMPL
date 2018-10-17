@@ -28,7 +28,7 @@ namespace ExprCore.Types
             }
         }
 
-        public override TokenType Evaluate(Dictionary<Variable, Fraction> var_values)
+        public override TokenType Evaluate(Dictionary<Variable, TokenType> var_values)
         {
             List<TokenType> evaluated = new List<TokenType>();
             foreach(TokenType t in parameters)

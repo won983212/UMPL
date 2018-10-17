@@ -100,9 +100,11 @@ namespace ExprCore
             return stack.Pop();
         }
 
-        public TokenType Evaluate(Dictionary<Variable, Fraction> var_values)
+        public TokenType Evaluate(Dictionary<Variable, TokenType> var_values)
         {
             return ProcessCalculate((node, p1, p2) => {
+                if(p1 is Variable && node.op == '=')
+                    return OperatorRegistry.ExecuteBinaryOperation(node, p1, p2.Evaluate(var_values));
                 return OperatorRegistry.ExecuteBinaryOperation(node, p1.Evaluate(var_values), p2.Evaluate(var_values));
             },
             (node) => {

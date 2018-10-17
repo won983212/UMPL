@@ -120,5 +120,11 @@ namespace MathCalc
         {
             cards.Clear();
         }
+
+        private void Editing_Variables(object sender, RoutedEventArgs e)
+        {
+            VariableWindow wind = new VariableWindow();
+            wind.Show();
+        }
     }
 }

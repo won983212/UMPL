@@ -14,7 +14,7 @@
         <ContextMenu x:Key="ConfigMenu">
             <MenuItem Header="모두 지우기" Click="Allclear_Cards"/>
             <Separator/>
-            <MenuItem Header="변수 편집"/>
+            <MenuItem Header="변수 편집" Click="Editing_Variables"/>
             <MenuItem Header="행렬 삽입"/>
         </ContextMenu>
     </Window.Resources>

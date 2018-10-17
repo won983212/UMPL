@@ -27,7 +27,7 @@ namespace ExprCore.Types
             return "Vec2(" + X + ", " + Y + ")";
         }
 
-        public override TokenType Evaluate(Dictionary<Variable, Fraction> var_values)
+        public override TokenType Evaluate(Dictionary<Variable, TokenType> var_values)
         {
             return new Vec2(X.Evaluate(var_values), Y.Evaluate(var_values));
         }

@@ -16,4 +16,14 @@ namespace MathCalc
             Items.Add(new ExprElement("det(mat3_3(3,3,2,2,0,-1,1,-3,4))"));
         }
     }
+
+    class DumpDataContextVariable
+    {
+        public ObservableCollection<VariableElement> Items { get; set; } = new ObservableCollection<VariableElement>();
+
+        public DumpDataContextVariable()
+        {
+            Items.Add(new VariableElement("x", null));
+        }
+    }
 }

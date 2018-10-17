@@ -85,7 +85,7 @@ namespace MathCalc
             {
                 try
                 {
-                    Result = InputExpr.Evaluate(new Dictionary<Variable, Fraction>());
+                    Result = VariableManager.EvaluateWithVariable(InputExpr);
                     OutputType = GetPrettyType(Result);
                 }
                 catch (ExprCoreException e)

@@ -107,7 +107,7 @@ namespace ExprCore.Types
             return hashCode;
         }
 
-        public override TokenType Evaluate(Dictionary<Variable, Fraction> var_values)
+        public override TokenType Evaluate(Dictionary<Variable, TokenType> var_values)
         {
             List<TokenType> datas = new List<TokenType>();
             for (int i = 0; i < rows; i++)

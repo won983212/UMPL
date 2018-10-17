@@ -50,9 +50,7 @@ namespace ExprCore.Operators
             Type pType2 = param2.GetType();
             BinaryOperatorDef def = new BinaryOperatorDef(pType1, op, pType2);
             if (binary_operators.ContainsKey(def))
-            {
                 return binary_operators[def].func(param1, param2);
-            }
             else
             {
                 def = new BinaryOperatorDef(pType2, op, pType1);
@@ -60,9 +58,13 @@ namespace ExprCore.Operators
                 {
                     OperationData<BinaryOperateFunc> data = binary_operators[def];
                     if (data.isCommutative)
-                    {
                         return data.func(param2, param1);
-                    }
+                }
+                else
+                {
+                    def = new BinaryOperatorDef(pType1, op, typeof(TokenType));
+                    if (binary_operators.ContainsKey(def))
+                        return binary_operators[def].func(param1, param2);
                 }
             }
 
@@ -113,6 +115,9 @@ namespace ExprCore.Operators
             RegisterBinary(typeof(Matrix), typeof(Matrix), new Operator('*'), typeof(Matrix), MatrixOperators.Multiply);
             RegisterBinaryCommutative(typeof(Matrix), typeof(Fraction), new Operator('*'), typeof(Matrix), MatrixOperators.Scala);
             RegisterUnary(typeof(Matrix), new Operator('-'), typeof(Matrix), MatrixOperators.Negative);
+
+            // Expression
+            RegisterBinary(typeof(TokenType), typeof(Variable), new Operator('='), typeof(TokenType), VariableManager.Institute);
         }
     }
 }

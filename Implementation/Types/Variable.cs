@@ -30,11 +30,11 @@ namespace ExprCore.Types
             return var_name;
         }
 
-        public override TokenType Evaluate(Dictionary<Variable, Fraction> var_values)
+        public override TokenType Evaluate(Dictionary<Variable, TokenType> var_values)
         {
             if (var_values.ContainsKey(this))
             {
-                return new Fraction(var_values[this]);
+                return var_values[this];
             }
             else throw new ExprCoreException("변수 " + var_name + "의 값을 찾을 수 없습니다.");
         }

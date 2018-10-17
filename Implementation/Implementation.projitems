@@ -40,5 +40,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Types\Vec3.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Types\Vector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TypeTree.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)VariableManager.cs" />
   </ItemGroup>
 </Project>

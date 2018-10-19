@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExprCore;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace MathCalc
 
         public DumpDataContextVariable()
         {
-            Items.Add(new VariableElement("x", null));
+            Items.Add(new VariableElement(new ExprCore.Types.Variable("x"), ExpressionParser.ParseExpression("-2*a+sqrt(12+3)")));
         }
     }
 }

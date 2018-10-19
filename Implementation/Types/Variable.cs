@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ExprCore.Types
 {
-    class Variable : TokenType
+    public class Variable : TokenType
     {
         public readonly string var_name;
 

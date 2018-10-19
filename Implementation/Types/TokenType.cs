@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ExprCore.Types
 {
-    class TokenType
+    public class TokenType
     {
         // 해당 타입에 상수만 포함되어있는가?
         public bool IsConstant { get; protected set; } = false;

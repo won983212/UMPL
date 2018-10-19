@@ -55,6 +55,7 @@ namespace MathCalc.TypeRenderer
 
     static class ExprTreeVisualizer
     {
+        public static bool UseFractionForm = true;
         public static readonly Typeface FormulaFont = new Typeface("Cambria Math");
 
         public static Size DrawElements(DrawingContext ctx, double x, double y, int fontSize, TokenType type)
@@ -148,12 +149,19 @@ namespace MathCalc.TypeRenderer
             }
             else if(type is Fraction frac)
             {
-                FormulaElement n = new TextElement(frac.numerator.ToString(), size);
-                FormulaElement d = new TextElement(frac.denomiator.ToString(), size);
-                if (frac.denomiator == 1)
-                    return n;
+                if (UseFractionForm)
+                {
+                    FormulaElement n = new TextElement(frac.numerator.ToString(), size);
+                    FormulaElement d = new TextElement(frac.denomiator.ToString(), size);
+                    if (frac.denomiator == 1)
+                        return n;
+                    else
+                        return new FractionElement(n, d);
+                }
                 else
-                    return new FractionElement(n, d);
+                {
+                    return new TextElement(frac.GetValue().ToString(), size);
+                }
             }
             else if(type is UnaryOperatorWrapper unary)
             {

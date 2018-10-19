@@ -1,6 +1,7 @@
 ﻿using ExprCore;
 using ExprCore.Exceptions;
 using ExprCore.Types;
+using MathCalc.TypeRenderer;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,6 +24,7 @@ namespace MathCalc
     public partial class MainWindow : Window
     {
         private ObservableCollection<ExprElement> cards = new ObservableCollection<ExprElement>();
+        private List<ExprElement> liveItems = new List<ExprElement>();
 
         public MainWindow()
         {
@@ -75,6 +77,7 @@ namespace MathCalc
             Button bt = sender as Button;
             if(bt.DataContext is ExprElement element)
             {
+                liveItems.Remove(element);
                 element.MarkAsRemove(cards);
             }
         }
@@ -104,9 +107,11 @@ namespace MathCalc
                     if (element.LiveExecute)
                     {
                         element.BorderBrush = (Brush)FindResource("VariableColor");
+                        liveItems.Add(element);
                     }
                     else
                     {
+                        liveItems.Remove(element);
                         if(element.OutputType == "Error")
                             element.BorderBrush = (Brush)FindResource("ErrorColor");
                         else
@@ -118,13 +123,20 @@ namespace MathCalc
 
         private void Allclear_Cards(object sender, RoutedEventArgs e)
         {
+            liveItems.Clear();
             cards.Clear();
         }
 
         private void Editing_Variables(object sender, RoutedEventArgs e)
         {
-            VariableWindow wind = new VariableWindow();
+            VariableWindow wind = new VariableWindow(liveItems);
             wind.Show();
+        }
+
+        private void FractionForm_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = sender as MenuItem;
+            ExprTreeVisualizer.UseFractionForm = item.IsChecked;
         }
     }
 }

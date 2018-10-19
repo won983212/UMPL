@@ -8,11 +8,12 @@
         mc:Ignorable="d"
         WindowStyle="None"
         ResizeMode="NoResize"
-        Title="MathCalc" Height="500" Width="500">
+        Title="Universal Mathematics Calculator" Height="500" Width="500">
     <Window.Resources>
         <local:DumpDataContext x:Key="TestDatas" />
         <ContextMenu x:Key="ConfigMenu">
             <MenuItem Header="모두 지우기" Click="Allclear_Cards"/>
+            <MenuItem Header="분수로 표시" IsCheckable="True" IsChecked="True" Click="FractionForm_Click" />
             <Separator/>
             <MenuItem Header="변수 편집" Click="Editing_Variables"/>
             <MenuItem Header="행렬 삽입"/>

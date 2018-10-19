@@ -48,10 +48,17 @@
                                 <Rectangle Grid.Column="2" Fill="Black" Width="1" Margin="5" />
                                 <TextBlock Grid.Column="1" FontSize="14" FontWeight="Bold" Width="60" HorizontalAlignment="Center" TextAlignment="Center" VerticalAlignment="Center" Text="{Binding VariableName}" />
                                 <local:ExpressionViewer Grid.Column="3" VerticalAlignment="Center" TargetView="{Binding VariableValue}" Margin="15" UseLayoutRounding="False" SnapsToDevicePixels="False"/>
-                                <Rectangle Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="1" Height="1" Margin="10,5,10,0" Fill="Black" />
+                                <Rectangle Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="1" Height="1" Margin="5,0" Fill="Black" />
                                 <Grid Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2" Margin="5">
-                                    <Expander Header="자세히">
-                                        adsad
+                                    <Expander Header="자세히" Loaded="Expander_Loaded" Expanded="Expander_Expanded" Visibility="Collapsed">
+                                        <StackPanel Margin="5">
+                                            <Slider x:Name="Slider" ValueChanged="Slider_ValueChanged" Minimum="{Binding ElementName=MinVal, Path=Text}" Maximum="{Binding ElementName=MaxVal, Path=Text}" TickFrequency="0.1" IsSnapToTickEnabled="True"/>
+                                            <DockPanel Margin="6">
+                                                <TextBox x:Name="MinVal" DockPanel.Dock="Left" Width="40" Text="-10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                                                <TextBox x:Name="MaxVal" DockPanel.Dock="Right" Width="40" Text="10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                                                <Label x:Name="ContentValue" HorizontalAlignment="Center"/>
+                                            </DockPanel>
+                                        </StackPanel>
                                     </Expander>
                                     <Button DockPanel.Dock="Right" Width="45" Height="25" Style="{StaticResource SimpleButton}" VerticalAlignment="Top" HorizontalAlignment="Right" Click="Item_Delete">삭제</Button>
                                 </Grid>

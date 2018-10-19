@@ -14,10 +14,8 @@ using System.Windows.Threading;
 
 namespace MathCalc
 {
-    class ExprElement : INotifyPropertyChanged
+    public class ExprElement : RemovableElement<ExprElement>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        
         public bool LiveExecute { get; set; } = false;
         public string PrevInput { get; private set; }
         public string InputType { get; private set; }
@@ -25,7 +23,20 @@ namespace MathCalc
         public string TimeToExecute { get; private set; }
         public string ExecutionTime { get; private set; }
         public TokenType InputExpr { get; private set; }
-        public TokenType Result { get; private set; }
+
+        private TokenType result;
+        public TokenType Result
+        {
+            get
+            {
+                return result;
+            }
+            private set
+            {
+                result = value;
+                OnPropertyChanged("Result");
+            }
+        }
 
         private Brush _borderBrush;
         public Brush BorderBrush
@@ -38,22 +49,6 @@ namespace MathCalc
             {
                 _borderBrush = value;
                 OnPropertyChanged("BorderBrush");
-            }
-        }
-
-        private DispatcherTimer removalTimer = null;
-        private ObservableCollection<ExprElement> fromRemove = null;
-        private bool _removing = false;
-        public bool Removing
-        {
-            get
-            {
-                return _removing;
-            }
-            private set
-            {
-                _removing = value;
-                OnPropertyChanged("Removing");
             }
         }
 
@@ -83,17 +78,7 @@ namespace MathCalc
 
             if (successIn)
             {
-                try
-                {
-                    Result = VariableManager.EvaluateWithVariable(InputExpr);
-                    OutputType = GetPrettyType(Result);
-                }
-                catch (ExprCoreException e)
-                {
-                    Result = new ErrorTextTokenType(e.Message);
-                    BorderBrush = (Brush)App.Current.FindResource("ErrorColor");
-                    OutputType = "Error";
-                }
+                UpdateResult();
             }
 
             stopwatch.Stop();
@@ -102,28 +87,19 @@ namespace MathCalc
             ExecutionTime = time == 0 ? "매우 짧음" : (time + "ms");
         }
 
-        public void MarkAsRemove(ObservableCollection<ExprElement> fromList)
+        public void UpdateResult()
         {
-            if (removalTimer == null)
+            try
             {
-                fromRemove = fromList;
-                Removing = true;
-
-                removalTimer = new DispatcherTimer();
-                removalTimer.Interval = new TimeSpan(0, 0, 0, 0, 300);
-                removalTimer.Tick += RemovalTimer_Tick;
-                removalTimer.Start();
+                Result = VariableManager.EvaluateWithVariable(InputExpr);
+                OutputType = GetPrettyType(Result);
             }
-        }
-
-        private void RemovalTimer_Tick(object sender, EventArgs e)
-        {
-            fromRemove.Remove(this);
-        }
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            catch (ExprCoreException e)
+            {
+                Result = new ErrorTextTokenType(e.Message);
+                BorderBrush = (Brush)App.Current.FindResource("ErrorColor");
+                OutputType = "Error";
+            }
         }
 
         private static string GetPrettyType(TokenType type)

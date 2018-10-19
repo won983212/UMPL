@@ -1,6 +1,7 @@
 ﻿using ExprCore.Types;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -8,21 +9,28 @@ using System.Threading.Tasks;
 
 namespace MathCalc
 {
-    class VariableElement : INotifyPropertyChanged
+    class VariableElement : RemovableElement<VariableElement>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        public TokenType VariableValue { get; private set; }
-        public string VariableName { get; private set; }
-
-        public VariableElement(string varName, TokenType value)
+        private TokenType _varvalue = null;
+        public TokenType VariableValue
         {
-            VariableName = varName;
-            VariableValue = value;
+            get { return _varvalue; }
+            set
+            {
+                _varvalue = value;
+                OnPropertyChanged("VariableValue");
+            }
         }
-
-        protected void OnPropertyChanged(string name)
+        public string VariableName
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            get { return Variable.var_name; }
+        }
+        public Variable Variable { get; private set; }
+
+        public VariableElement(Variable var, TokenType value)
+        {
+            Variable = var;
+            VariableValue = value;
         }
     }
 }

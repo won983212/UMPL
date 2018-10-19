@@ -51,9 +51,13 @@ namespace ExprCore.Functions
                 {
                     if (((Fraction)m.data[i, c]).GetValue() != 0)
                     {
-                        if (i != r) Switching(ret, i, r);
+                        if (i != r)
+                        {
+                            Switching(ret, i, r);
+                            Console.WriteLine("Switch " + i + ", " + r);
+                            neg = !neg;
+                        }
                         found = true;
-                        neg = !neg;
                         break;
                     }
                 }
@@ -69,7 +73,12 @@ namespace ExprCore.Functions
                     for (int j = r + 1; j < m.rows; j++)
                     {
                         Fraction val = ret.data[j, c] as Fraction;
-                        if (val.GetValue() != 0) ScalaAdd(ret, r, j, FractionOperators.Negative(FractionOperators.Divide(val, src)));
+                        if (val.GetValue() != 0)
+                        {
+                            Fraction frac = FractionOperators.Negative(FractionOperators.Divide(val, src));
+                            ScalaAdd(ret, r, j, frac);
+                            Console.WriteLine("Add " + r + "*" + frac + " -> " + j);
+                        }
                     }
                 }
 

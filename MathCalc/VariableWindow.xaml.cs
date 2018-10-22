@@ -70,6 +70,7 @@ namespace MathCalc
             if (bt.DataContext is VariableElement element)
             {
                 element.MarkAsRemove(Items);
+                RenderElementTable.Remove(element.Variable);
                 VariableManager.DeleteVariable(element.Variable);
             }
         }

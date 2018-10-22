@@ -138,5 +138,11 @@ namespace MathCalc
             MenuItem item = sender as MenuItem;
             ExprTreeVisualizer.UseFractionForm = item.IsChecked;
         }
+
+        private void OpenMatrixInput_Click(object sender, RoutedEventArgs e)
+        {
+            MatrixKeyboard wnd = new MatrixKeyboard(InputTextBox);
+            wnd.Show();
+        }
     }
 }

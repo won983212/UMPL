@@ -25,7 +25,7 @@ namespace ExprCore.Types
                 Initialize((long)realnumber, 1);
                 return;
             }
-            else if(realnumber < ERROR)
+            else if(Math.Abs(realnumber) < ERROR)
             {
                 Initialize(0, 1);
                 return;
@@ -35,7 +35,8 @@ namespace ExprCore.Types
             denomiator = 0;
 
             bool neg = realnumber < 0;
-            double b = neg ? -realnumber : realnumber;
+            double origNum = neg ? -realnumber : realnumber;
+            double b = origNum;
             long pn = 0, pd = 1;
             long a, temp;
 
@@ -52,7 +53,7 @@ namespace ExprCore.Types
                 pd = temp;
 
                 b = 1 / (b - a);
-            } while (Math.Abs(realnumber - (double)numerator / denomiator) > realnumber * ERROR);
+            } while (Math.Abs(origNum - (double)numerator / denomiator) > origNum * ERROR);
 
             if (neg)
                 numerator *= -1;

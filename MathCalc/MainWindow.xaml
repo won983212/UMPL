@@ -16,7 +16,7 @@
             <MenuItem Header="분수로 표시" IsCheckable="True" IsChecked="True" Click="FractionForm_Click" />
             <Separator/>
             <MenuItem Header="변수 편집" Click="Editing_Variables"/>
-            <MenuItem Header="행렬 삽입"/>
+            <MenuItem Header="행렬 삽입" Click="OpenMatrixInput_Click"/>
         </ContextMenu>
     </Window.Resources>
     <Border BorderBrush="{StaticResource ThemeColor}" BorderThickness="1">

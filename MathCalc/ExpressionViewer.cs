@@ -39,6 +39,7 @@ namespace MathCalc
         private static void OnViewChanged(DependencyObject obj, DependencyPropertyChangedEventArgs arg)
         {
             ExpressionViewer t = obj as ExpressionViewer;
+            t.InvalidateMeasure();
             t.RenderDrawing();
         }
 

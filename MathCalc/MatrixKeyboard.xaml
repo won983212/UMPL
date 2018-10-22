@@ -1,0 +1,74 @@
+﻿<Window x:Class="MathCalc.MatrixKeyboard"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MathCalc"
+        mc:Ignorable="d"
+        WindowStyle="ToolWindow"
+        SizeToContent="WidthAndHeight"
+        Title="행렬 입력기">
+    <Window.Resources>
+        <Style TargetType="TextBox" x:Key="InTextboxStyle">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="60"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="FontWeight" Value="Light"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Viewbox HorizontalAlignment="Right" Height="{Binding ElementName=TextGrid, Path=ActualHeight}">
+                <TextBlock FontFamily="Dotum">[</TextBlock>
+            </Viewbox>
+            <Viewbox Grid.Column="2" HorizontalAlignment="Left" Height="{Binding ElementName=TextGrid, Path=ActualHeight}">
+                <TextBlock FontFamily="Dotum">]</TextBlock>
+            </Viewbox>
+            <UniformGrid Grid.Column="1" x:Name="TextGrid" HorizontalAlignment="Center" VerticalAlignment="Center" Rows="3" Columns="3">
+            </UniformGrid>
+            <Expander Grid.Row="1" Grid.ColumnSpan="3" Header="행렬 설정">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label VerticalContentAlignment="Center">행 개수:</Label>
+                    <TextBox x:Name="RowsTextbox" Grid.Column="1" Text="{Binding ElementName=TextGrid, Path=Rows, Mode=OneWay}" VerticalContentAlignment="Center" Height="25" FontSize="16" Margin="3"/>
+                    <Label Grid.Row="1" VerticalContentAlignment="Center">열 개수:</Label>
+                    <TextBox x:Name="ColumnsTextbox" Grid.Row="1" Grid.Column="1" Text="{Binding ElementName=TextGrid, Path=Columns, Mode=OneWay}" VerticalContentAlignment="Center" Height="25" FontSize="16" Margin="3"/>
+                    <Button Grid.Row="2" Grid.ColumnSpan="2" Style="{StaticResource SimpleButton}" Width="90" Height="30" Margin="3" FontSize="14" Click="ResizeButton_Click">크기 재설정</Button>
+                </Grid>
+            </Expander>
+        </Grid>
+        <Separator Grid.Row="1" />
+        <TextBox x:Name="Preview" Grid.Row="2" FontSize="16" Margin="5" Height="30" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" TextChanged="Preview_TextChanged"/>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Style="{StaticResource SimpleButton}" Width="90" Height="30" Margin="3" FontSize="14" Click="AppendButton_Click">행렬 삽입</Button>
+            <Button Style="{StaticResource SimpleButton}" Width="90" Height="30" Margin="3" FontSize="14" Click="ClearButton_Click">모두 클리어</Button>
+        </StackPanel>
+    </Grid>
+</Window>
